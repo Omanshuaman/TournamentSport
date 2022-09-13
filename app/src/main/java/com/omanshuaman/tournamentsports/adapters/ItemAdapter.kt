@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.omanshuaman.tournamentsports.databinding.EachItemBinding
 import java.util.ArrayList
 
 class ItemAdapter(private val mList: List<DataModel>) : RecyclerView.Adapter<ItemViewHolder>() {
@@ -33,8 +34,13 @@ class ItemAdapter(private val mList: List<DataModel>) : RecyclerView.Adapter<Ite
             holder.mArrowImage.setImageResource(R.drawable.arrow_down)
         }
         val adapter = NestedAdapter(list)
-        holder.nestedRecyclerView.layoutManager = LinearLayoutManager(holder.itemView.context)
-        holder.nestedRecyclerView.setHasFixedSize(true)
+        val layoutManager = LinearLayoutManager(
+            holder.nestedRecyclerView.context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        holder.nestedRecyclerView.layoutManager = layoutManager
+        holder.nestedRecyclerView.setHasFixedSize(false)
         holder.nestedRecyclerView.adapter = adapter
         holder.linearLayout.setOnClickListener {
             model.isExpandable = !model.isExpandable
@@ -47,12 +53,12 @@ class ItemAdapter(private val mList: List<DataModel>) : RecyclerView.Adapter<Ite
         return mList.size
     }
 
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val linearLayout: LinearLayout
-        private val expandableLayout: RelativeLayout
-        private val mTextView: TextView
-        private val mArrowImage: ImageView
-        private val nestedRecyclerView: RecyclerView
+    inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val linearLayout: LinearLayout
+        val expandableLayout: RelativeLayout
+        val mTextView: TextView
+        val mArrowImage: ImageView
+        val nestedRecyclerView: RecyclerView
 
         init {
             linearLayout = itemView.findViewById(R.id.linear_layout)

@@ -1,0 +1,64 @@
+{
+  "project_info": {
+    "project_number": "319310297783",
+    "firebase_url": "https://adminuser-d6f95-default-rtdb.firebaseio.com",
+    "project_id": "adminuser-d6f95",
+    "storage_bucket": "adminuser-d6f95.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:319310297783:android:6428a4fd7f43338fa1ab32",
+        "android_client_info": {
+          "package_name": "com.omanshuaman.tournamentsports"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "319310297783-8jrl591321bmktjgat5kmk56n03t3rgc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.omanshuaman.tournamentsports",
+            "certificate_hash": "a8a033e89b298839077b8b61f04637923da7ede1"
+          }
+        },
+        {
+          "client_id": "319310297783-kbkefdv0ri7ffess1pmihgpd03dgu0uq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.omanshuaman.tournamentsports",
+            "certificate_hash": "c7ac879b312baacae8714dd127001ef11d731c49"
+          }
+        },
+        {
+          "client_id": "319310297783-qcjpivhjlegc4vhdrp1q157klcodshji.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.omanshuaman.tournamentsports",
+            "certificate_hash": "3a9a62dc3339b4ff85947c8de67db02130896e67"
+          }
+        },
+        {
+          "client_id": "319310297783-pi682lf0pgvgr28rcv45dlr6pima6oa2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQFyDVezCU5J2fqyq0HL7tvgWkfe2_PVQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "319310297783-pi682lf0pgvgr28rcv45dlr6pima6oa2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

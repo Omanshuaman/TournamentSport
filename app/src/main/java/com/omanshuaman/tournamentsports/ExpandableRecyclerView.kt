@@ -17,8 +17,8 @@ class ExpandableRecyclerView : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_expandable_recycler_view)
         recyclerView = findViewById(R.id.main_recyclervie)
-        recyclerView.setHasFixedSize(true)
-        recyclerView.setLayoutManager(LinearLayoutManager(this))
+        recyclerView?.setHasFixedSize(false)
+        recyclerView?.layoutManager = LinearLayoutManager(this)
         mList = ArrayList()
 
         //list1
@@ -85,14 +85,14 @@ class ExpandableRecyclerView : AppCompatActivity() {
         nestedList7.add("Certain")
         nestedList7.add("Namkeen and Snacks")
         nestedList7.add("Honey and Spreads")
-        mList.add(DataModel(nestedList1, "Instant Food and Noodles"))
-        mList.add(DataModel(nestedList2, "Stationary"))
-        mList.add(DataModel(nestedList3, "Home Care"))
-        mList.add(DataModel(nestedList4, "Grocery & Staples"))
-        mList.add(DataModel(nestedList5, "Pet Care"))
-        mList.add(DataModel(nestedList6, "Baby Care"))
-        mList.add(DataModel(nestedList7, "Personal Care"))
-        adapter = ItemAdapter(mList)
-        recyclerView.setAdapter(adapter)
+        mList!!.add(DataModel(nestedList1, "Instant Food and Noodles"))
+        mList!!.add(DataModel(nestedList2, "Stationary"))
+        mList!!.add(DataModel(nestedList3, "Home Care"))
+        mList!!.add(DataModel(nestedList4, "Grocery & Staples"))
+        mList!!.add(DataModel(nestedList5, "Pet Care"))
+        mList!!.add(DataModel(nestedList6, "Baby Care"))
+        mList!!.add(DataModel(nestedList7, "Personal Care"))
+        adapter = ItemAdapter(mList!!)
+        recyclerView?.adapter = adapter
     }
 }
