@@ -13,10 +13,13 @@ import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.omanshuaman.tournamentsports.models.ModelUser
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.omanshuaman.tournamentsports.adapters.AdapterParticipantAdd
+import com.omanshuaman.tournamentsports.models.ModelUser
 import com.squareup.picasso.Picasso
 import java.util.*
 
@@ -222,7 +225,11 @@ class GroupInfoActivity : AppCompatActivity() {
                     userList!!.clear()
                     for (ds in dataSnapshot.children) {
                         //get uid from Group > Participants
+
+                        //get uid from Group > Participants
                         val uid = "" + ds.child("uid").value
+
+                        //get info of user using uid we got above
 
                         //get info of user using uid we got above
                         val ref = FirebaseDatabase.getInstance().getReference("Users")

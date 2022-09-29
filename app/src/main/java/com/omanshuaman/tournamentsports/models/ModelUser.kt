@@ -12,7 +12,7 @@ class ModelUser {
     var uid: String? = null
     var onlineStatus: String? = null
     var typingTo: String? = null
-    var isBlocked = false
+    var isReported = false
 
     constructor() {}
     constructor(
@@ -25,7 +25,7 @@ class ModelUser {
         uid: String?,
         onlineStatus: String?,
         typingTo: String?,
-        isBlocked: Boolean
+        isReported: Boolean
     ) {
         this.name = name
         this.email = email
@@ -36,6 +36,6 @@ class ModelUser {
         this.uid = uid
         this.onlineStatus = onlineStatus
         this.typingTo = typingTo
-        this.isBlocked = isBlocked
+        this.isReported = isReported
     }
 }

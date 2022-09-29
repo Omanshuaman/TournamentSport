@@ -26,10 +26,10 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
-            android:name=".ExpandableRecyclerView"
+            android:name=".MapImage"
             android:exported="false" />
         <activity
-            android:name=".FormFillActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".SpinnerActivity"
@@ -85,7 +85,7 @@
             android:name="com.adevinta.leku.LocationPickerActivity"
             android:exported="false"
             android:label="@string/leku_title_activity_location_picker"
-            android:parentActivityName=".MainActivity1"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
@@ -97,7 +97,7 @@
                 android:resource="@xml/leku_searchable" />
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity1" />
+                android:value=".MainActivity" />
         </activity>
     </application>
 

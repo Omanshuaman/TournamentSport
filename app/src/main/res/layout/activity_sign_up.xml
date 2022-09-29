@@ -22,38 +22,46 @@
         <EditText
             android:id="@+id/txtUsername"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_height="60dp"
             android:layout_marginBottom="10dp"
+            android:background="@drawable/custom_input"
+            android:drawableStart="@drawable/custom_email_icon"
+            android:drawablePadding="12dp"
             android:ems="10"
             android:hint="Username"
             android:inputType="textPersonName"
-            android:padding="9dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/chatbackground" />
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/txtEmail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_height="60dp"
+            android:background="@drawable/custom_input"
+            android:drawableStart="@drawable/custom_email_icon"
+            android:drawablePadding="12dp"
             android:ems="10"
-            android:hint="Email"
+            android:hint="@string/email_address"
             android:inputType="textEmailAddress"
-            android:padding="9dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/chatbackground" />
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp" />
 
         <EditText
             android:id="@+id/txtPassword"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
+            android:layout_marginTop="9dp"
+            android:background="@drawable/custom_input"
+            android:drawableStart="@drawable/custom_lock_icon"
+            android:drawablePadding="12dp"
             android:ems="10"
-            android:hint="Password"
+            android:hint="@string/password"
             android:inputType="textPassword"
-            android:padding="9dp"
-            android:textColor="@color/black"
-            android:textColorHint="@color/chatbackground" />
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/txtAlreadyHaveAccount"
@@ -78,7 +86,7 @@
             app:cornerRadius="8dp" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="200dp"
             android:layout_height="match_parent"
             android:layout_marginTop="25dp"
             android:orientation="horizontal">
@@ -90,7 +98,7 @@
                 android:layout_marginEnd="4dp"
                 android:layout_marginRight="4dp"
                 android:layout_weight="1"
-                android:drawableLeft="@drawable/ic_google"
+                android:drawableTop="@drawable/ic_google"
                 android:padding="15dp"
                 android:text="Google"
                 android:textAllCaps="false"

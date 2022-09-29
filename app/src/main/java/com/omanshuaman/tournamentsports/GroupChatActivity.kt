@@ -338,12 +338,6 @@ class GroupChatActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
-        menu.findItem(R.id.action_settings).isVisible = false
-        menu.findItem(R.id.action_create_group).isVisible = false
-        menu.findItem(R.id.action_add_post).isVisible = false
-        menu.findItem(R.id.action_logout).isVisible = false
-        menu.findItem(R.id.action_search).isVisible = false
-
         return super.onCreateOptionsMenu(menu)
     }
 

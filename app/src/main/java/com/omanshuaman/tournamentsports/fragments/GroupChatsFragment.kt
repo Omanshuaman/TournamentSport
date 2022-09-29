@@ -61,112 +61,13 @@ class GroupChatsFragment : Fragment() {
         })
     }
 
-    private fun searchGroupChatsList(query: String) {
-        groupChatLists = ArrayList()
-        val reference = FirebaseDatabase.getInstance().getReference("Tournament").child("Groups")
-        reference.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                groupChatLists!!.clear()
-                for (ds in dataSnapshot.children) {
-                    //if current user's uid exists in participants lis of group then show that group
-                    if (ds.child("Participants").child(firebaseAuth!!.uid!!).exists()) {
-
-                        //search by group title
-                        if (ds.child("groupTitle").toString().lowercase(Locale.getDefault())
-                                .contains(
-                                    query.lowercase(
-                                        Locale.getDefault()
-                                    )
-                                )
-                        ) {
-                            val model = ds.getValue(
-                                ModelGroupChatList::class.java
-                            )
-                            groupChatLists!!.add(model)
-                        }
-                    }
-                }
-                adapterGroupChatList = activity?.let { AdapterGroupChatList(it, groupChatLists) }
-
-                groupsRv!!.adapter = adapterGroupChatList
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {}
-        })
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        setHasOptionsMenu(true) //to show menu option in fragment
-        super.onCreate(savedInstanceState)
-    }
-
     /*inflate options menu*/
     @Deprecated("Deprecated in Java")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         //inflating menu
         inflater.inflate(R.menu.menu, menu)
 
-        //hide addpost icon from this fragment
-        menu.findItem(R.id.action_add_post).isVisible = false
-        menu.findItem(R.id.action_settings).isVisible = false
         menu.findItem(R.id.action_groupinfo).isVisible = false;
-
-        //SearchView
-        val item = menu.findItem(R.id.action_search)
-        val searchView = MenuItemCompat.getActionView(item) as SearchView
-
-        //search listener
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(s: String): Boolean {
-                //called when user press search button from keyboard
-                //if search query is not empty then search
-                if (!TextUtils.isEmpty(s.trim { it <= ' ' })) {
-                    //search text contains text, search it
-                    searchGroupChatsList(s)
-                } else {
-                    //search text empty, get all users
-                    loadGroupChatsList()
-                }
-                return false
-            }
-
-            override fun onQueryTextChange(s: String): Boolean {
-                //called whenever user press any single letter
-                //if search query is not empty then search
-                if (!TextUtils.isEmpty(s.trim { it <= ' ' })) {
-                    //search text contains text, search it
-                    searchGroupChatsList(s)
-                } else {
-                    //search text empty, get all users
-                    loadGroupChatsList()
-                }
-                return false
-            }
-        })
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    /*handle menu item clicks*/
-    @Deprecated("Deprecated in Java")
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        //get item id
-        val id = item.itemId
-        if (id == R.id.action_logout) {
-            firebaseAuth!!.signOut()
-            checkUserStatus()
-        } else if (id == R.id.action_create_group) {
-            //go to GroupCreateActivity activity
-            startActivity(Intent(activity, GroupCreateActivity::class.java))
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    private fun checkUserStatus() {
-        val user = firebaseAuth!!.currentUser
-        if (user == null) {
-            //user not signed in, go to main activity
-            startActivity(Intent(activity, SignInActivity::class.java))
-            requireActivity().finish()
-        }
     }
 }

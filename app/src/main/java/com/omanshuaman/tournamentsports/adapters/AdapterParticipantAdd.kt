@@ -52,10 +52,35 @@ class AdapterParticipantAdd(
         } catch (e: Exception) {
             holder.avatarIv.setImageResource(R.drawable.ic_default_img)
         }
-        if (modelUser != null) {
-            checkIfAlreadyExists(modelUser, holder)
-        }
+        checkIfAlreadyExists(modelUser!!, holder)
 
+        holder.reportIv.setImageResource(R.drawable.ic_report_grey)
+
+        //click to block unblock user
+        holder.reportIv.setOnClickListener {
+
+            val builder = AlertDialog.Builder(
+                context
+            )
+            builder.setTitle("Report the user")
+            val options: Array<String> = arrayOf("Yes", "No")
+            builder.setItems(
+                options
+            ) { dialog, which ->
+                //handle item clicks
+                if (which == 0) {
+                    //Remove Admin clicked
+                    Toast.makeText(
+                        context,
+                        "Reported: Last 5 Messages of this user is saved in database to examine.",
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    //nothing happen
+                }
+            }.show()
+
+        }
         //handle click
         holder.itemView.setOnClickListener {
             /*Check if user already added or not
@@ -146,22 +171,13 @@ class AdapterParticipantAdd(
                                         }
                                     }.show()
                                 }
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    "Only creator or admin can remove/block user.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-                        } else {
-                            //user doesn't exists/not-participant: add
-                            val builder = AlertDialog.Builder(
-                                context
-                            )
-                            builder.setTitle("Add Participant")
-                                .setMessage("Add this user in this group?")
-                                .setPositiveButton(
-                                    "ADD"
-                                ) { dialog, which -> //add user
-                                    addParticipant(modelUser)
-                                }
-                                .setNegativeButton(
-                                    "CANCEL"
-                                ) { dialog, which -> dialog.dismiss() }.show()
                         }
                     }
 
@@ -170,23 +186,6 @@ class AdapterParticipantAdd(
         }
     }
 
-    private fun addParticipant(modelUser: ModelUser) {
-        //setup user data - add user in group
-        val timestamp = "" + System.currentTimeMillis()
-        val hashMap = HashMap<String, String>()
-        hashMap["uid"] = modelUser.uid!!
-        hashMap["role"] = "participant"
-        hashMap["timestamp"] = "" + timestamp
-        //add that user in Groups>groupId>Participants
-        val ref = FirebaseDatabase.getInstance().getReference("Tournament").child("Groups")
-        ref.child(groupId).child("Participants").child(modelUser.uid!!).setValue(hashMap)
-            .addOnSuccessListener { //added successfully
-                Toast.makeText(context, "Added successfully...", Toast.LENGTH_SHORT).show()
-            }
-            .addOnFailureListener { e -> //failed adding user in group
-                Toast.makeText(context, "" + e.message, Toast.LENGTH_SHORT).show()
-            }
-    }
 
     private fun makeAdmin(modelUser: ModelUser) {
         //setup data - change role
@@ -258,12 +257,14 @@ class AdapterParticipantAdd(
     inner class HolderParticipantAdd(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
         val avatarIv: ImageView
+        val reportIv: ImageView
         val nameTv: TextView
         val emailTv: TextView
         val statusTv: TextView
 
         init {
             avatarIv = itemView.findViewById(R.id.avatarIv)
+            reportIv = itemView.findViewById(R.id.reportIv)
             nameTv = itemView.findViewById(R.id.nameTv)
             emailTv = itemView.findViewById(R.id.emailTv)
             statusTv = itemView.findViewById(R.id.statusTv)

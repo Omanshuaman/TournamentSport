@@ -21,8 +21,8 @@ android {
         applicationId "com.omanshuaman.tournamentsports"
         minSdk 21
         targetSdk 32
-        versionCode 10
-        versionName "2.5"
+        versionCode 12
+        versionName "2.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         signingConfig signingConfigs.debug

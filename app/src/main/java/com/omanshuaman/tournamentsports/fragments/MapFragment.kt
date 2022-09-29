@@ -59,6 +59,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         button = view.findViewById(R.id.button1)
 
+
+
         val supportMapFragment =
             childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
 
@@ -132,7 +134,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 //            startActivity(Intent(context, MainActivity::class.java))
 //            requireActivity().finish()
 
-                val intent = Intent(context, ExpandableRecyclerView::class.java)
+                val intent = Intent(context, SpinnerActivity::class.java)
                 startActivity(intent)
             } else {
                 //user not signed in, go to main activity

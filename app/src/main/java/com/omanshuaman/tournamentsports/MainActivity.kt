@@ -14,6 +14,8 @@ import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.adevinta.leku.LATITUDE
 import com.adevinta.leku.LONGITUDE
 import com.adevinta.leku.LocationPickerActivity
@@ -23,6 +25,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.omanshuaman.tournamentsports.adapters.ItemAdapter
+import com.omanshuaman.tournamentsports.models.DataModel
 import com.omanshuaman.tournamentsports.models.LocationModel
 import com.omanshuaman.tournamentsports.models.Upload
 import java.util.*
@@ -30,7 +34,7 @@ import java.util.*
 @Suppress("DEPRECATION")
 
 
-class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
+class MainActivity : AppCompatActivity() {
 
     private var mAuth: FirebaseAuth? = null
     private var uploadBtn: FloatingActionButton? = null
@@ -43,20 +47,21 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
     private var mbtnPicklocation: Button? = null
     private var tvMylocation: TextView? = null
     private val PLACE_PICKER_REQUEST2 = 999
-    private var spinner: Spinner? = null
     private var item: String? = null
-    private var planets = arrayOf("Choose Sports", "Football", "Cricket", "Athletics", "Badminton")
-    private var textView: TextView? = null
     private var latitude: String? = null
     private var longitude: String? = null
     private var geocoder: Geocoder? = null
     private var addresses: List<Address>? = null
+    private var mList: MutableList<DataModel>? = null
+    private var adapter: ItemAdapter? = null
+
     private val userid = FirebaseAuth.getInstance().currentUser!!.uid
     private val databaseReference = FirebaseDatabase.getInstance().getReference("Tournament")
     private val storageReference =
         FirebaseStorage.getInstance().reference.child("Photos").child(userid)
     private var imageUri: Uri? = null
     val gTimestamp = "" + System.currentTimeMillis()
+    private var recyclerView: RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,24 +72,18 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         imageView = findViewById(R.id.imageView)
         mtournamentsportsname = findViewById(R.id.tournament_name)
         mbtnPicklocation = findViewById(R.id.BtnPickLocation)
-        textView = findViewById(R.id.select_sports)
-        spinner = findViewById(R.id.spinner)
         mEntryFee = findViewById(R.id.entry_fee)
         mPrizeMoney = findViewById(R.id.prize_money)
-        spinner!!.onItemSelectedListener = this
-
-        val spinnerArrayAdapter: ArrayAdapter<*> = ArrayAdapter<Any?>(
-            this,
-            android.R.layout.simple_spinner_dropdown_item,
-            planets
-        )
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner!!.adapter = spinnerArrayAdapter
         geocoder = Geocoder(this, Locale.getDefault())
 
         progressBar!!.visibility = View.INVISIBLE
         mAuth = FirebaseAuth.getInstance()
 
+        recyclerView = findViewById(R.id.main_recyclerview)
+        recyclerView?.setHasFixedSize(false)
+        recyclerView?.layoutManager = LinearLayoutManager(this)
+
+        recycler()
         imageView!!.setOnClickListener {
             val galleryIntent = Intent()
             galleryIntent.action = Intent.ACTION_GET_CONTENT
@@ -235,7 +234,11 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
                         mtournamentsportsname!!.text.toString(),
                         uri1.toString(),
                         longitude,
-                        latitude, item, mEntryFee?.text.toString(), mPrizeMoney?.text.toString(),userid
+                        latitude,
+                        item,
+                        mEntryFee?.text.toString(),
+                        mPrizeMoney?.text.toString(),
+                        userid
                     )
                     val locationModel = LocationModel(longitude, latitude)
 
@@ -268,12 +271,16 @@ class MainActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         finish()
     }
 
-    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-        item = spinner?.selectedItem.toString()
-        textView?.text = item
-    }
+    private fun recycler() {
+        mList = ArrayList()
 
-    override fun onNothingSelected(p0: AdapterView<*>?) {
-        TODO("Not yet implemented")
+        val nestedList1: MutableList<String> = ArrayList()
+        nestedList1.add("Dwarka Badminton Tournament")
+        nestedList1.add("National Blast Championship")
+        nestedList1.add("Super 4’s Tournament")
+        nestedList1.add("Najafgarh Football Academy tournament")
+        mList!!.add(DataModel(nestedList1, "Example"))
+        adapter = ItemAdapter(mList!!)
+        recyclerView?.adapter = adapter
     }
 }

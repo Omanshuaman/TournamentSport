@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.omanshuaman.tournamentsports.databinding.EachItemBinding
 import java.util.ArrayList
 
@@ -54,7 +56,7 @@ class ItemAdapter(private val mList: List<DataModel>) : RecyclerView.Adapter<Ite
     }
 
     inner class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val linearLayout: LinearLayout
+        val linearLayout: CardView
         val expandableLayout: RelativeLayout
         val mTextView: TextView
         val mArrowImage: ImageView
