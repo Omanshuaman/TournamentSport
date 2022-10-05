@@ -5,11 +5,14 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.omanshuaman.tournamentsports.R
 import com.omanshuaman.tournamentsports.CardviewActivity
+import com.omanshuaman.tournamentsports.ComposeActivity
 import com.omanshuaman.tournamentsports.models.Upload
+import com.squareup.picasso.Picasso
 
 
 class AdapterCard(context: Context, uploads: List<Upload?>?) :
@@ -21,9 +24,12 @@ class AdapterCard(context: Context, uploads: List<Upload?>?) :
     class MyHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         var name: TextView
+        var image: ImageView
 
         init {
             name = itemView.findViewById(R.id.txtPlaceName)
+            image = itemView.findViewById(R.id.cardImageview)
+
         }
     }
 
@@ -44,8 +50,9 @@ class AdapterCard(context: Context, uploads: List<Upload?>?) :
 
         val model = mUploads[position]
         val id = model?.Id
-
+        val image = model?.imageUrl
         val name: String? = mUploads[position]?.tournamentName
+        Picasso.get().load(image).fit().centerCrop().into(holder.image)
 
         //set data
         holder.name.text = name
@@ -53,7 +60,7 @@ class AdapterCard(context: Context, uploads: List<Upload?>?) :
         //handle group click
         holder.itemView.setOnClickListener {
             //open group chat
-            val intent = Intent(mContext, CardviewActivity::class.java)
+            val intent = Intent(mContext, ComposeActivity::class.java)
             intent.putExtra("tournamentId", id)
             mContext.startActivity(intent)
         }

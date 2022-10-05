@@ -1,7 +1,6 @@
 package com.omanshuaman.tournamentsports
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -10,7 +9,6 @@ import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.webkit.MimeTypeMap
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -39,11 +37,9 @@ class MainActivity : AppCompatActivity() {
     private var mAuth: FirebaseAuth? = null
     private var uploadBtn: FloatingActionButton? = null
     private var imageView: ImageView? = null
-    private var progressBar: ProgressBar? = null
     private var mtournamentsportsname: EditText? = null
     private var mPrizeMoney: EditText? = null
     private var mEntryFee: EditText? = null
-    private var progressDialog: ProgressDialog? = null
     private var mbtnPicklocation: Button? = null
     private var tvMylocation: TextView? = null
     private val PLACE_PICKER_REQUEST2 = 999
@@ -62,13 +58,13 @@ class MainActivity : AppCompatActivity() {
     private var imageUri: Uri? = null
     val gTimestamp = "" + System.currentTimeMillis()
     private var recyclerView: RecyclerView? = null
+    private var recyclerView1: RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         uploadBtn = findViewById(R.id.upload_btn)
-        progressBar = findViewById(R.id.progressBar)
         imageView = findViewById(R.id.imageView)
         mtournamentsportsname = findViewById(R.id.tournament_name)
         mbtnPicklocation = findViewById(R.id.BtnPickLocation)
@@ -76,20 +72,19 @@ class MainActivity : AppCompatActivity() {
         mPrizeMoney = findViewById(R.id.prize_money)
         geocoder = Geocoder(this, Locale.getDefault())
 
-        progressBar!!.visibility = View.INVISIBLE
         mAuth = FirebaseAuth.getInstance()
 
         recyclerView = findViewById(R.id.main_recyclerview)
         recyclerView?.setHasFixedSize(false)
         recyclerView?.layoutManager = LinearLayoutManager(this)
 
-        recycler()
-        imageView!!.setOnClickListener {
-            val galleryIntent = Intent()
-            galleryIntent.action = Intent.ACTION_GET_CONTENT
-            galleryIntent.type = "image/*"
-            startActivityForResult(galleryIntent, 2)
-        }
+        recyclerView1 = findViewById(R.id.rules_recyclerview)
+        recyclerView1?.setHasFixedSize(false)
+        recyclerView1?.layoutManager = LinearLayoutManager(this)
+
+        recyclerName()
+
+        recyclerRules()
 
         mbtnPicklocation!!.setOnClickListener {
             openPlacePicker()
@@ -97,7 +92,7 @@ class MainActivity : AppCompatActivity() {
 
         uploadBtn!!.setOnClickListener {
             if (imageUri != null) {
-                uploadToFirebase(imageUri!!, item!!)
+                uploadToFirebase(imageUri!!)
                 val intent = Intent(this, GroupCreateActivity::class.java)
                 intent.putExtra("Id", gTimestamp)
                 startActivity(intent)
@@ -213,50 +208,38 @@ class MainActivity : AppCompatActivity() {
 //            }
     }
 
-    private fun uploadToFirebase(uri: Uri, item: String) {
-        progressDialog = ProgressDialog(this)
-        progressDialog!!.setMessage("Uploading")
+    private fun uploadToFirebase(uri: Uri) {
 
         val fileRef =
             storageReference.child(
                 System.currentTimeMillis()
                     .toString() + "." + getFileExtension(uri)
             )
-        progressDialog!!.show()
 
         fileRef.putFile(uri).addOnSuccessListener {
             fileRef.downloadUrl.addOnSuccessListener { uri1: Uri ->
-                if (item == "Choose planets") {
-                    Toast.makeText(this, "pla", Toast.LENGTH_SHORT).show()
-                } else {
-                    val model = Upload(
-                        gTimestamp,
-                        mtournamentsportsname!!.text.toString(),
-                        uri1.toString(),
-                        longitude,
-                        latitude,
-                        item,
-                        mEntryFee?.text.toString(),
-                        mPrizeMoney?.text.toString(),
-                        userid
-                    )
-                    val locationModel = LocationModel(longitude, latitude)
+                val model = Upload(
+                    gTimestamp,
+                    mtournamentsportsname!!.text.toString(),
+                    uri1.toString(),
+                    longitude,
+                    latitude,
+                    item,
+                    mEntryFee?.text.toString(),
+                    mPrizeMoney?.text.toString(),
+                    userid
+                )
+                val locationModel = LocationModel(longitude, latitude)
 
-                    databaseReference.child("Just Photos").child(gTimestamp).setValue(model)
-                    databaseReference.child("Location").child(gTimestamp).child("LatLng")
-                        .setValue(locationModel)
+                databaseReference.child("Just Photos").child(gTimestamp).setValue(model)
+                databaseReference.child("Location").child(gTimestamp).child("LatLng")
+                    .setValue(locationModel)
 
-                    // progressBar!!.visibility = View.INVISIBLE
-                    Toast.makeText(this@MainActivity, "Uploaded Successfully", Toast.LENGTH_SHORT)
-                        .show()
-                    progressDialog!!.dismiss()
-
-                }
+                // progressBar!!.visibility = View.INVISIBLE
+                Toast.makeText(this@MainActivity, "Uploaded Successfully", Toast.LENGTH_SHORT)
+                    .show()
             }
 
-        }.addOnProgressListener { progressBar!!.visibility = View.VISIBLE }.addOnFailureListener {
-            progressBar!!.visibility = View.INVISIBLE
-            Toast.makeText(this@MainActivity, "Uploading Failed !!", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -271,7 +254,7 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun recycler() {
+    private fun recyclerName() {
         mList = ArrayList()
 
         val nestedList1: MutableList<String> = ArrayList()
@@ -282,5 +265,18 @@ class MainActivity : AppCompatActivity() {
         mList!!.add(DataModel(nestedList1, "Example"))
         adapter = ItemAdapter(mList!!)
         recyclerView?.adapter = adapter
+    }
+
+    private fun recyclerRules() {
+        mList = ArrayList()
+
+        val nestedList1: MutableList<String> = ArrayList()
+        nestedList1.add("Dwarka Badminton Tournament")
+        nestedList1.add("National Blast Championship")
+        nestedList1.add("Super 4’s Tournament")
+        nestedList1.add("Najafgarh Football Academy tournament")
+        mList!!.add(DataModel(nestedList1, "Example"))
+        adapter = ItemAdapter(mList!!)
+        recyclerView1?.adapter = adapter
     }
 }

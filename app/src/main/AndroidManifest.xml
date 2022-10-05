@@ -26,6 +26,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
+            android:name=".ComposeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_compose"
+            android:theme="@style/AppTheme" />
+        <activity
             android:name=".MapImage"
             android:exported="false" />
         <activity
