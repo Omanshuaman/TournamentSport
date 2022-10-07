@@ -18,7 +18,7 @@ import com.omanshuaman.tournamentsports.ui.theme.titleColor
 @Composable
 fun OrderedList(
     title: String,
-    items: List<String>,
+    items: String,
     textColor: Color
 ) {
     Column {
@@ -45,7 +45,7 @@ fun OrderedList(
 fun OrderedListPreview() {
     OrderedList(
         title = "Family",
-        items = listOf("Minator", "Kushina"),
+        items = "Minator",
         textColor = MaterialTheme.colors.titleColor
     )
 }

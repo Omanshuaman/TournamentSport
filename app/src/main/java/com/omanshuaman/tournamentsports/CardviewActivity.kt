@@ -74,8 +74,6 @@ class CardviewActivity : AppCompatActivity() {
                 })
         }
 
-
-
         mButton!!.setOnClickListener {
 
             if (user != null) {

@@ -25,13 +25,15 @@ import com.omanshuaman.tournamentsports.components.InfoBox
 import com.omanshuaman.tournamentsports.components.OrderedList
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.omanshuaman.tournamentsports.R
+import com.omanshuaman.tournamentsports.models.Upload
 import com.omanshuaman.tournamentsports.ui.theme.*
 import com.omanshuaman.tournamentsports.util.Constants
+import com.omanshuaman.tournamentsports.util.Constants.BASE_URL
 
 @ExperimentalMaterialApi
 @Composable
 fun DetailsContent(
-    selectedHero: Hero?,
+    selectedHero: Upload?,
     colors: Map<String, String>
 ) {
     var vibrant by remember { mutableStateOf("#000000") }
@@ -75,7 +77,7 @@ fun DetailsContent(
         }, content = {
             selectedHero?.let { hero ->
                 BackgroundContent(
-                    heroImage = hero.image,
+                    heroImage = hero.imageUrl!!,
                     imageFraction = currentSheetFraction,
                     onCloseClicked = { }
                 )
@@ -86,7 +88,7 @@ fun DetailsContent(
 
 @Composable
 fun BottomSheetContent(
-    selectedHero: Hero,
+    selectedHero: Upload,
     infoBoxIconColor: Color = MaterialTheme.colors.primary,
     sheetBackgroundColor: Color = MaterialTheme.colors.surface,
     contentColor: Color = MaterialTheme.colors.titleColor
@@ -112,7 +114,7 @@ fun BottomSheetContent(
             )
             Text(
                 modifier = Modifier.weight(8f),
-                text = selectedHero.name,
+                text = selectedHero.tournamentName!!,
                 color = contentColor,
                 fontSize = MaterialTheme.typography.h4.fontSize,
                 fontWeight = FontWeight.Bold
@@ -128,21 +130,21 @@ fun BottomSheetContent(
             InfoBox(
                 icon = painterResource(id = R.drawable.ic_bolt),
                 iconColor = infoBoxIconColor,
-                bigText = "${selectedHero.power}",
+                bigText = "${selectedHero.Id}",
                 smallText = stringResource(R.string.power),
                 textColor = contentColor
             )
             InfoBox(
                 icon = painterResource(id = R.drawable.ic_calendar),
                 iconColor = infoBoxIconColor,
-                bigText = selectedHero.month,
+                bigText = selectedHero.latitude!!,
                 smallText = stringResource(R.string.month),
                 textColor = contentColor
             )
             InfoBox(
                 icon = painterResource(id = R.drawable.ic_cake),
                 iconColor = infoBoxIconColor,
-                bigText = selectedHero.day,
+                bigText = selectedHero.longitude!!,
                 smallText = stringResource(R.string.birthday),
                 textColor = contentColor
             )
@@ -160,7 +162,7 @@ fun BottomSheetContent(
             modifier = Modifier
                 .alpha(ContentAlpha.medium)
                 .padding(bottom = MEDIUM_PADDING),
-            text = selectedHero.about,
+            text = selectedHero.SportsType!!,
             color = contentColor,
             fontSize = MaterialTheme.typography.body1.fontSize,
             maxLines = 7
@@ -172,17 +174,17 @@ fun BottomSheetContent(
         ) {
             OrderedList(
                 title = stringResource(R.string.family),
-                items = selectedHero.family,
+                items = selectedHero.prizeMoney!!,
                 textColor = contentColor
             )
             OrderedList(
                 title = stringResource(R.string.abilities),
-                items = selectedHero.abilities,
+                items = selectedHero.prizeMoney!!,
                 textColor = contentColor
             )
             OrderedList(
                 title = stringResource(R.string.nature_types),
-                items = selectedHero.natureTypes,
+                items = selectedHero.tournamentName!!,
                 textColor = contentColor
             )
         }
@@ -199,7 +201,7 @@ fun BackgroundContent(
     onCloseClicked: () -> Unit
 ) {
     val imageUrl =
-        "${Constants.BASE_URL}/images/sasuke.jpg"
+        heroImage
     val painter = rememberImagePainter(imageUrl) {
         error(R.drawable.ic_cake)
     }
@@ -259,18 +261,16 @@ val BottomSheetScaffoldState.currentSheetFraction: Float
 @Composable
 fun BottomSheetContentPreview() {
     BottomSheetContent(
-        selectedHero = Hero(
-            id = 1,
-            name = "Naruto",
-            image = "",
-            about = "Merhabalar looooa sdfasd fas df asdf sadf asd fsad fsadf asd fasdf sda fsadfsad fasdf asd fasdfasdfasdfasd fasd fasdf asdfsadf sad fasd fasd fasd fasdfasdfasdf sadfasdfasd fasd fasdfasdfasdfasdfasdfasdfasdfasdfadsf sadf asdf asdf asdf asdf asdfasd fasd fasd fasdfasd fasd fasdf asdf asdf asd",
-            rating = 4.5,
-            power = 0,
-            month = "Oct",
-            day = "1st",
-            family = listOf("Minato", "Kushina", "Boruto", "Himawari"),
-            abilities = listOf("Sage Mode", "Shadow Clone", "Rasengan"),
-            natureTypes = listOf("Earth", "Wind")
+        selectedHero = Upload(
+            Id = "om",
+            tournamentName = "de",
+            imageUrl = "$BASE_URL/images/sasuke.jpg",
+            longitude = "String",
+            latitude = "String",
+            SportsType = "String",
+            entryFee = "String",
+            prizeMoney = "String",
+            uid = "String"
         )
     )
 }

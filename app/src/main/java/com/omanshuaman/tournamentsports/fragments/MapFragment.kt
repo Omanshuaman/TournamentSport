@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Half.toFloat
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -28,8 +27,9 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.omanshuaman.tournamentsports.*
 import com.omanshuaman.tournamentsports.R
+import com.omanshuaman.tournamentsports.SignInActivity
+import com.omanshuaman.tournamentsports.SpinnerActivity
 import com.omanshuaman.tournamentsports.adapters.AdapterCard
 import com.omanshuaman.tournamentsports.models.Upload
 
@@ -58,7 +58,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         super.onViewCreated(view, savedInstanceState)
 
         button = view.findViewById(R.id.button1)
-
 
 
         val supportMapFragment =
@@ -104,6 +103,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mMap = googleMap
         val databaseReference =
             FirebaseDatabase.getInstance().getReference("Tournament").child("Location")
+        var isFisrtTime = true
 
         recyclerView = view?.findViewById(R.id.placesRecyclerView)
 
@@ -122,7 +122,28 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         mMarkerArray = ArrayList()
         // getLastKnownLocation()
+        mMap.setOnMarkerClickListener { marker ->
+            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
 
+            val markerPosition = marker.position
+            var selectedMarker = 0
+            for (i in 0 until mMarkerArray.size) {
+
+                if (markerPosition.latitude == mMarkerArray[i]?.position?.latitude && markerPosition.longitude == mMarkerArray[i]?.position?.longitude
+                ) {
+                    selectedMarker = i
+                }
+            }
+            val zoom: Float = mMap.cameraPosition.zoom
+
+            Log.d("TAGzx", "onMapReady: " + zoom)
+
+
+            recyclerView?.smoothScrollToPosition(selectedMarker)
+            // marker.showInfoWindow()
+
+            return@setOnMarkerClickListener false
+        }
 
         button?.setOnClickListener {
 
@@ -184,24 +205,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             }
         })
 
-        mMap.setOnMarkerClickListener { marker ->
-            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-
-            val markerPosition = marker.position
-            var selectedMarker = 0
-            for (i in 0 until mMarkerArray.size) {
-
-                if (markerPosition.latitude == mMarkerArray[i]?.position?.latitude && markerPosition.longitude == mMarkerArray[i]?.position?.longitude
-                ) {
-                    selectedMarker = i
-                }
-            }
-            val cameraPosition = CameraPosition.Builder().target(markerPosition).zoom(12f).build()
-            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-            recyclerView?.smoothScrollToPosition(selectedMarker)
-            // marker.showInfoWindow()
-            return@setOnMarkerClickListener false
-        }
 
 
         recyclerView!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -222,7 +225,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                                     mMarkerArray[i]!!.position.latitude,
                                     mMarkerArray[i]!!.position.longitude,
                                 )
-                            ).zoom(5f).build()
+                            ).zoom(mMap.cameraPosition.zoom).build()
+                            val zoom: Float = mMap.cameraPosition.zoom
+
                             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
 
                         }

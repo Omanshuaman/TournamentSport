@@ -7,7 +7,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,6 +33,8 @@ class DetailsViewModel @Inject constructor(
     fun setColorPalette(colors: Map<String, String>) {
         _colorPalette.value = colors
     }
+
+
 }
 
 sealed class UiEvent {
