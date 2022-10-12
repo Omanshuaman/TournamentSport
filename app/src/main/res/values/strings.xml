@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tournament Sports</string>
+    <string name="app_name">Tournamax</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -32,4 +32,10 @@
     <string name="family">Family</string>
     <string name="abilities">Abilities</string>
     <string name="nature_types">Nature Types</string>
+
+    <string-array name="numbers">
+        <item>100m</item>
+        <item>200m</item>
+        <item>400m</item>
+    </string-array>
 </resources>

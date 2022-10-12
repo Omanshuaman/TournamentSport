@@ -3,6 +3,7 @@ package com.omanshuaman.tournamentsports.adapters
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,11 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import coil.annotation.ExperimentalCoilApi
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.omanshuaman.tournamentsports.ComposeActivity
 import com.omanshuaman.tournamentsports.R
 import com.omanshuaman.tournamentsports.models.Upload

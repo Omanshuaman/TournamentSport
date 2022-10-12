@@ -37,7 +37,6 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         val user = firebaseAuth!!.uid
 
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        navigationView.setNavigationItemSelectedListener(this)
 
         val toggle = ActionBarDrawerToggle(
             this, drawerLayout, toolbar,
@@ -57,6 +56,8 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
             ).commit()
             navigationView.setCheckedItem(R.id.navi_home)
         }
+        navigationView.setNavigationItemSelectedListener(this)
+
     }
 
     override fun onBackPressed() {

@@ -1,17 +1,18 @@
 package com.omanshuaman.tournamentsports
 
 import android.app.Activity
+import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.webkit.MimeTypeMap
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.adevinta.leku.LATITUDE
@@ -22,24 +23,30 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
 import com.omanshuaman.tournamentsports.adapters.ItemAdapter
+import com.omanshuaman.tournamentsports.inventory.DatePickerFragment
 import com.omanshuaman.tournamentsports.models.DataModel
 import com.omanshuaman.tournamentsports.models.LocationModel
 import com.omanshuaman.tournamentsports.models.Upload
+import java.text.DateFormat
 import java.util.*
+import android.widget.Spinner
+
 
 @Suppress("DEPRECATION")
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
+    AdapterView.OnItemSelectedListener {
 
     private var mAuth: FirebaseAuth? = null
     private var uploadBtn: FloatingActionButton? = null
-    private var imageView: ImageView? = null
     private var mtournamentsportsname: EditText? = null
-    private var mPrizeMoney: EditText? = null
+    private var mRegisterDate: EditText? = null
+    private var mRules: EditText? = null
+    private var mAddress: EditText? = null
     private var mEntryFee: EditText? = null
+    private var mPrizeMoney: EditText? = null
     private var mbtnPicklocation: Button? = null
     private var tvMylocation: TextView? = null
     private val PLACE_PICKER_REQUEST2 = 999
@@ -50,55 +57,61 @@ class MainActivity : AppCompatActivity() {
     private var addresses: List<Address>? = null
     private var mList: MutableList<DataModel>? = null
     private var adapter: ItemAdapter? = null
+    private var button: Button? = null
+    private var textView: TextView? = null
+    private var text: String? = null
 
     private val userid = FirebaseAuth.getInstance().currentUser!!.uid
     private val databaseReference = FirebaseDatabase.getInstance().getReference("Tournament")
-    private val storageReference =
-        FirebaseStorage.getInstance().reference.child("Photos").child(userid)
-    private var imageUri: Uri? = null
-    val gTimestamp = "" + System.currentTimeMillis()
+    private val gTimestamp = "" + System.currentTimeMillis()
     private var recyclerView: RecyclerView? = null
-    private var recyclerView1: RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         uploadBtn = findViewById(R.id.upload_btn)
-        imageView = findViewById(R.id.imageView)
         mtournamentsportsname = findViewById(R.id.tournament_name)
         mbtnPicklocation = findViewById(R.id.BtnPickLocation)
         mEntryFee = findViewById(R.id.entry_fee)
         mPrizeMoney = findViewById(R.id.prize_money)
+        mAddress = findViewById(R.id.address)
+        button = findViewById(R.id.button)
+        textView = findViewById(R.id.textView)
+
         geocoder = Geocoder(this, Locale.getDefault())
 
         mAuth = FirebaseAuth.getInstance()
+        val spinner = findViewById<Spinner>(R.id.spinner1)
+        val adapter = ArrayAdapter.createFromResource(
+            this,
+            R.array.numbers, android.R.layout.simple_spinner_item
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+        spinner.onItemSelectedListener = this
 
         recyclerView = findViewById(R.id.main_recyclerview)
         recyclerView?.setHasFixedSize(false)
         recyclerView?.layoutManager = LinearLayoutManager(this)
 
-        recyclerView1 = findViewById(R.id.rules_recyclerview)
-        recyclerView1?.setHasFixedSize(false)
-        recyclerView1?.layoutManager = LinearLayoutManager(this)
-
         recyclerName()
 
-        recyclerRules()
-
+        button!!.setOnClickListener {
+            val datePicker: DialogFragment = DatePickerFragment()
+            datePicker.show(supportFragmentManager, "date picker")
+        }
         mbtnPicklocation!!.setOnClickListener {
             openPlacePicker()
         }
 
         uploadBtn!!.setOnClickListener {
-            if (imageUri != null) {
-                uploadToFirebase(imageUri!!)
-                val intent = Intent(this, GroupCreateActivity::class.java)
-                intent.putExtra("Id", gTimestamp)
-                startActivity(intent)
-            } else {
-                Toast.makeText(this@MainActivity, "Please Select Image", Toast.LENGTH_SHORT).show()
-            }
+            uploadToFirebase()
+            val intent = Intent(this, PosterActivity::class.java)
+            val extras = Bundle()
+            extras.putString("tournamentId", mtournamentsportsname!!.text.toString())
+            intent.putExtras(extras)
+            startActivity(intent)
         }
 
     }
@@ -111,7 +124,7 @@ class MainActivity : AppCompatActivity() {
         val key = value.toString()
 
         val locationPickerIntent = LocationPickerActivity.Builder()
-            .withLocation(41.4036299, 2.1743558)
+            .withLocation(28.611541, 76.9972578)
             .withGeolocApiKey(key)
             .withSearchZone("es_ES")
             .withSearchZone(
@@ -132,7 +145,6 @@ class MainActivity : AppCompatActivity() {
             .withVoiceSearchHidden()
             .withUnnamedRoadHidden()
             //   .withMapStyle()
-            // .withSearchBarHidden()
             .build(applicationContext)
 
         startActivityForResult(locationPickerIntent, PLACE_PICKER_REQUEST2)
@@ -165,36 +177,35 @@ class MainActivity : AppCompatActivity() {
 //        startActivityForResult(intent, Constants.PLACE_PICKER_REQUEST)
     }
 
+
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 2 && resultCode == RESULT_OK && data != null) {
-            imageUri = data.data
-            imageView!!.setImageURI(imageUri)
-        } else
-            if (resultCode == Activity.RESULT_OK && data != null) {
-                Log.d("RESULT****", "OK")
-                if (requestCode == PLACE_PICKER_REQUEST2) {
 
-                    latitude = data.getDoubleExtra(LATITUDE, 0.0).toString()
-                    Log.d("LATITUDE****", latitude.toString())
-                    longitude = data.getDoubleExtra(LONGITUDE, 0.0).toString()
-                    Log.d("LONGITUDE****", longitude.toString())
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            Log.d("RESULT****", "OK")
+            if (requestCode == PLACE_PICKER_REQUEST2) {
 
-                    addresses =
-                        geocoder?.getFromLocation(
-                            latitude!!.toDouble(),
-                            longitude!!.toDouble(),
-                            1
-                        ) // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-                    Log.d("address****", addresses.toString())
+                latitude = data.getDoubleExtra(LATITUDE, 0.0).toString()
+                Log.d("LATITUDE****", latitude.toString())
+                longitude = data.getDoubleExtra(LONGITUDE, 0.0).toString()
+                Log.d("LONGITUDE****", longitude.toString())
+                addresses =
+                    geocoder?.getFromLocation(
+                        latitude!!.toDouble(),
+                        longitude!!.toDouble(),
+                        1
+                    ) // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                Log.d("address****", addresses.toString())
+                Log.d("address****", addresses?.get(0)?.getAddressLine(0).toString())
+                mAddress?.setText(addresses?.get(0)?.getAddressLine(0).toString())
 
-                    val sb = StringBuilder()
-                    sb.append("LATITUDE:").append(latitude).append("\n").append("LONGITUDE: ")
-                        .append(longitude)
-                    tvMylocation?.text = sb.toString()
-                }
+                val sb = StringBuilder()
+                sb.append("LATITUDE:").append(latitude).append("\n").append("LONGITUDE: ")
+                    .append(longitude)
+                tvMylocation?.text = sb.toString()
             }
+        }
 //            if (resultCode == Activity.RESULT_OK && data != null) {
 //                Log.d("RESULT****", "OK")
 //                if (requestCode == Constants.PLACE_PICKER_REQUEST) {
@@ -208,75 +219,60 @@ class MainActivity : AppCompatActivity() {
 //            }
     }
 
-    private fun uploadToFirebase(uri: Uri) {
+    private fun uploadToFirebase() {
 
-        val fileRef =
-            storageReference.child(
-                System.currentTimeMillis()
-                    .toString() + "." + getFileExtension(uri)
-            )
+        val model = Upload(
+            gTimestamp,
+            mtournamentsportsname!!.text.toString(),
+            textView?.text.toString(),
+            mRegisterDate?.text.toString(),
+            text,
+            mRules?.text.toString(),
+            mAddress?.text.toString(),
+            "",
+            longitude,
+            latitude,
+            item,
+            mEntryFee?.text.toString(),
+            mPrizeMoney?.text.toString(),
+            userid,
+        )
+        val locationModel = LocationModel(longitude, latitude)
 
-        fileRef.putFile(uri).addOnSuccessListener {
-            fileRef.downloadUrl.addOnSuccessListener { uri1: Uri ->
-                val model = Upload(
-                    gTimestamp,
-                    mtournamentsportsname!!.text.toString(),
-                    uri1.toString(),
-                    longitude,
-                    latitude,
-                    item,
-                    mEntryFee?.text.toString(),
-                    mPrizeMoney?.text.toString(),
-                    userid
-                )
-                val locationModel = LocationModel(longitude, latitude)
+        databaseReference.child("Just Photos").child(gTimestamp).setValue(model)
+        databaseReference.child("Location").child(gTimestamp).child("LatLng")
+            .setValue(locationModel)
 
-                databaseReference.child("Just Photos").child(gTimestamp).setValue(model)
-                databaseReference.child("Location").child(gTimestamp).child("LatLng")
-                    .setValue(locationModel)
-
-                // progressBar!!.visibility = View.INVISIBLE
-                Toast.makeText(this@MainActivity, "Uploaded Successfully", Toast.LENGTH_SHORT)
-                    .show()
-            }
-
-        }
-    }
-
-    private fun getFileExtension(mUri: Uri): String? {
-        val cr = contentResolver
-        val mime = MimeTypeMap.getSingleton()
-        return mime.getExtensionFromMimeType(cr.getType(mUri))
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finish()
     }
 
     private fun recyclerName() {
         mList = ArrayList()
 
         val nestedList1: MutableList<String> = ArrayList()
+        nestedList1.add("Najafgrah park Sprint Tournament")
         nestedList1.add("Dwarka Badminton Tournament")
         nestedList1.add("National Blast Championship")
-        nestedList1.add("Super 4’s Tournament")
-        nestedList1.add("Najafgarh Football Academy tournament")
+        nestedList1.add("Najafgarh Football tournament")
         mList!!.add(DataModel(nestedList1, "Example"))
         adapter = ItemAdapter(mList!!)
         recyclerView?.adapter = adapter
     }
 
-    private fun recyclerRules() {
-        mList = ArrayList()
 
-        val nestedList1: MutableList<String> = ArrayList()
-        nestedList1.add("Dwarka Badminton Tournament")
-        nestedList1.add("National Blast Championship")
-        nestedList1.add("Super 4’s Tournament")
-        nestedList1.add("Najafgarh Football Academy tournament")
-        mList!!.add(DataModel(nestedList1, "Example"))
-        adapter = ItemAdapter(mList!!)
-        recyclerView1?.adapter = adapter
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        val c = Calendar.getInstance()
+        c[Calendar.YEAR] = year
+        c[Calendar.MONTH] = month
+        c[Calendar.DAY_OF_MONTH] = dayOfMonth
+        val currentDateString: String = DateFormat.getDateInstance(DateFormat.FULL).format(c.time)
+        textView?.text = currentDateString
+
     }
+
+    override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+        text = parent.getItemAtPosition(position).toString()
+        //   Toast.makeText(parent.context, text, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onNothingSelected(parent: AdapterView<*>?) {}
 }

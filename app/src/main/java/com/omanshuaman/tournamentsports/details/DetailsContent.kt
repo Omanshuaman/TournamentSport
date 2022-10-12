@@ -1,11 +1,17 @@
 package com.omanshuaman.tournamentsports.details
 
+import android.content.Intent
 import android.graphics.Color.parseColor
+import android.graphics.Color.rgb
+import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -19,16 +25,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat.startActivity
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.omanshuaman.tournamentsports.ParticipantInfoActivity
+import com.omanshuaman.tournamentsports.R
+import com.omanshuaman.tournamentsports.SignInActivity
 import com.omanshuaman.tournamentsports.components.InfoBox
 import com.omanshuaman.tournamentsports.components.OrderedList
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.omanshuaman.tournamentsports.R
 import com.omanshuaman.tournamentsports.models.Upload
 import com.omanshuaman.tournamentsports.ui.theme.*
-import com.omanshuaman.tournamentsports.util.Constants
 import com.omanshuaman.tournamentsports.util.Constants.BASE_URL
+import androidx.compose.ui.platform.LocalContext
 
 @ExperimentalMaterialApi
 @Composable
@@ -45,6 +60,7 @@ fun DetailsContent(
         darkVibrant = colors["darkVibrant"]!!
         onDarkVibrant = colors["onDarkVibrant"]!!
     }
+
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setStatusBarColor(
@@ -95,6 +111,7 @@ fun BottomSheetContent(
 ) {
     Column(
         modifier = Modifier
+            .verticalScroll(rememberScrollState())
             .background(sheetBackgroundColor)
             .padding(all = LARGE_PADDING)
     ) {
@@ -108,7 +125,7 @@ fun BottomSheetContent(
                 modifier = Modifier
                     .size(INFO_ICON_SIZE)
                     .weight(2f),
-                painter = painterResource(id = R.drawable.ic_cake),
+                painter = painterResource(id = R.drawable.ic_trophy),
                 contentDescription = stringResource(id = R.string.app_logo),
                 tint = contentColor
             )
@@ -142,7 +159,7 @@ fun BottomSheetContent(
                 textColor = contentColor
             )
             InfoBox(
-                icon = painterResource(id = R.drawable.ic_cake),
+                icon = painterResource(id = R.drawable.ic_trophy),
                 iconColor = infoBoxIconColor,
                 bigText = selectedHero.longitude!!,
                 smallText = stringResource(R.string.birthday),
@@ -189,8 +206,55 @@ fun BottomSheetContent(
             )
         }
 
+        AndroidView(
+            factory = { context ->
+                val view = LayoutInflater.from(context)
+                    .inflate(R.layout.activity_click_cardview, null, false)
+                val textView = view.findViewById<TextView>(R.id.regiter)
+                val firebaseAuth: FirebaseAuth?
+
+                firebaseAuth = FirebaseAuth.getInstance()
+                val user = firebaseAuth.uid
+
+                if (user != null) {
+                    //user is signed in stay here
+                    //set email of logged in user
+                    val ref = FirebaseDatabase.getInstance().getReference("Tournament").child("Groups")
+                    ref.child(selectedHero.Id.toString()).child("Participants").child(user)
+                        .addListenerForSingleValueEvent(object : ValueEventListener {
+                            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                textView!!.isEnabled = !dataSnapshot.exists()
+
+                            }
+
+                            override fun onCancelled(databaseError: DatabaseError) {}
+                        })
+
+                } else {
+                    //noting happen
+                }
+
+                textView!!.setOnClickListener {
+                    if (user != null) {
+                        val intent1 = Intent(context, ParticipantInfoActivity::class.java)
+                        intent1.putExtra("tournamentId", selectedHero.Id)
+                        context.startActivity(intent1)
+                    } else {
+                        val intent1 = Intent(context, SignInActivity::class.java)
+                        context.startActivity(intent1)
+                    }
+                }
+
+                // do whatever you want...
+                view // return the view
+
+            },
+        )
+
+
     }
 }
+
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
@@ -251,8 +315,8 @@ val BottomSheetScaffoldState.currentSheetFraction: Float
         return when {
             currentValue == BottomSheetValue.Collapsed && targetValue == BottomSheetValue.Collapsed -> 1f
             currentValue == BottomSheetValue.Expanded && targetValue == BottomSheetValue.Expanded -> 0f
-            currentValue == BottomSheetValue.Collapsed && targetValue == BottomSheetValue.Collapsed -> 1f - fraction
-            currentValue == BottomSheetValue.Expanded && targetValue == BottomSheetValue.Expanded -> 0f + fraction
+            currentValue == BottomSheetValue.Collapsed && targetValue == BottomSheetValue.Expanded -> 1f - fraction
+            currentValue == BottomSheetValue.Expanded && targetValue == BottomSheetValue.Collapsed -> 0f + fraction
             else -> fraction
         }
     }
@@ -263,7 +327,12 @@ fun BottomSheetContentPreview() {
     BottomSheetContent(
         selectedHero = Upload(
             Id = "om",
-            tournamentName = "de",
+            tournamentName = "Delhi Badminton Tournament",
+            matchDate="vfdv",
+            registerDate= "dvdvd",
+            requirement="vdf",
+            rules="rdf",
+            address="dfdv",
             imageUrl = "$BASE_URL/images/sasuke.jpg",
             longitude = "String",
             latitude = "String",

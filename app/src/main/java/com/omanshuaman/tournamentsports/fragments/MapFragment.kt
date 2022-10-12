@@ -27,6 +27,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.omanshuaman.tournamentsports.ComposeActivity
 import com.omanshuaman.tournamentsports.R
 import com.omanshuaman.tournamentsports.SignInActivity
 import com.omanshuaman.tournamentsports.SpinnerActivity
@@ -103,7 +104,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mMap = googleMap
         val databaseReference =
             FirebaseDatabase.getInstance().getReference("Tournament").child("Location")
-        var isFisrtTime = true
 
         recyclerView = view?.findViewById(R.id.placesRecyclerView)
 
@@ -296,7 +296,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     val latLng = LatLng(location.latitude, location.longitude)
 
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 5F))
-
                 }
 
             }
