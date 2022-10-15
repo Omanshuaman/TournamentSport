@@ -2,6 +2,8 @@ package com.omanshuaman.tournamentsports
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -48,14 +50,21 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         // navigationView.menu.findItem(R.id.group_chat).isVisible = user != null
         navigationView.menu.findItem(R.id.nav_sign_out).isEnabled = user != null
 
-
-        if (savedInstanceState == null) {
+        Handler(Looper.getMainLooper()).postDelayed({
+            // Your Code
             supportFragmentManager.beginTransaction().replace(
                 R.id.fragment_container,
                 MapFragment()
             ).commit()
             navigationView.setCheckedItem(R.id.navi_home)
-        }
+        }, 500)
+//        if (savedInstanceState == null) {
+//            supportFragmentManager.beginTransaction().replace(
+//                R.id.fragment_container,
+//                MapFragment()
+//            ).commit()
+//            navigationView.setCheckedItem(R.id.navi_home)
+//        }
         navigationView.setNavigationItemSelectedListener(this)
 
     }

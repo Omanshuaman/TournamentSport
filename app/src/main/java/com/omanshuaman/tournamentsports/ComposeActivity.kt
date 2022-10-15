@@ -1,9 +1,6 @@
 package com.omanshuaman.tournamentsports
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,14 +12,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.annotation.ExperimentalCoilApi
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.omanshuaman.tournamentsports.details.DetailsContent
 import com.omanshuaman.tournamentsports.details.DetailsViewModel
 import com.omanshuaman.tournamentsports.models.Upload
@@ -38,7 +30,6 @@ class ComposeActivity : ComponentActivity() {
 
 
     private var firebaseAuth: FirebaseAuth? = null
-    private var Id: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,32 +56,37 @@ class ComposeActivity : ComponentActivity() {
     fun DetailsScreen(
         detailsViewModel: DetailsViewModel = hiltViewModel()
     ) {
-        val user = firebaseAuth!!.uid
 
         val intent = intent
         val extras = intent.extras
-        val username_string = extras!!.getString("tournamentId")
-        val password_string = extras.getString("EXTRA_PASSWORD")
-        
+        val id = extras!!.getString("tournamentId")
+        val entryFee = extras.getString("entryFee")
+        val prizeFee = extras.getString("prizeFee")
+        val address = extras.getString("address")
+        val backgroundImage = extras.getString("backgroundImage")
+        val tournamentName = extras.getString("tournamentName")
+        val matchDate = extras.getString("matchDate")
+
+
         val colorPalette by detailsViewModel.colorPalette
 
         if (colorPalette.isNotEmpty()) {
 
             DetailsContent(
                 selectedHero = Upload(
-                    Id = username_string,
-                    tournamentName = "Delhi Badminton",
-                    matchDate="vfdv",
-                    registerDate= "dvdvd",
-                    requirement="vdf",
-                    rules="rdf",
-                    address="dfdv",
-                    imageUrl = password_string,
+                    Id = id,
+                    tournamentName = tournamentName,
+                    matchDate = matchDate,
+                    registerDate = "dvdvd",
+                    requirement = "vdf",
+                    sports = "rdf",
+                    address = address,
+                    imageUrl = backgroundImage,
                     longitude = "String",
                     latitude = "String",
                     SportsType = "String",
-                    entryFee = "String",
-                    prizeMoney = "String",
+                    entryFee = entryFee,
+                    prizeMoney = prizeFee,
                     uid = "String"
                 ), colors = colorPalette
             )
@@ -104,7 +100,7 @@ class ComposeActivity : ComponentActivity() {
         LaunchedEffect(key1 = true) {
 
             val bitmap = convertImageUrlToBitmap(
-                imageUrl = password_string!!,
+                imageUrl = backgroundImage!!,
 
                 //  imageUrl = "$BASE_URL/images/sasuke.jpg",
                 context = context

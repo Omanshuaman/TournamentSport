@@ -25,12 +25,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.omanshuaman.tournamentsports.adapters.ItemAdapter
 import com.omanshuaman.tournamentsports.inventory.DatePickerFragment
+import com.omanshuaman.tournamentsports.inventory.LoadingDialog
 import com.omanshuaman.tournamentsports.models.DataModel
-import com.omanshuaman.tournamentsports.models.LocationModel
 import com.omanshuaman.tournamentsports.models.Upload
 import java.text.DateFormat
 import java.util.*
-import android.widget.Spinner
 
 
 @Suppress("DEPRECATION")
@@ -43,7 +42,6 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
     private var uploadBtn: FloatingActionButton? = null
     private var mtournamentsportsname: EditText? = null
     private var mRegisterDate: EditText? = null
-    private var mRules: EditText? = null
     private var mAddress: EditText? = null
     private var mEntryFee: EditText? = null
     private var mPrizeMoney: EditText? = null
@@ -65,6 +63,7 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
     private val databaseReference = FirebaseDatabase.getInstance().getReference("Tournament")
     private val gTimestamp = "" + System.currentTimeMillis()
     private var recyclerView: RecyclerView? = null
+    private var loadingDialog: LoadingDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,10 +105,15 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
         }
 
         uploadBtn!!.setOnClickListener {
+
             uploadToFirebase()
             val intent = Intent(this, PosterActivity::class.java)
             val extras = Bundle()
-            extras.putString("tournamentId", mtournamentsportsname!!.text.toString())
+            extras.putString("tournamentName", mtournamentsportsname!!.text.toString())
+            extras.putString("matchDate", textView?.text.toString())
+            extras.putString("address", mAddress?.text.toString())
+            extras.putString("id", gTimestamp)
+
             intent.putExtras(extras)
             startActivity(intent)
         }
@@ -227,9 +231,9 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
             textView?.text.toString(),
             mRegisterDate?.text.toString(),
             text,
-            mRules?.text.toString(),
+            "Sprint",
             mAddress?.text.toString(),
-            "",
+            mRegisterDate?.text.toString(),
             longitude,
             latitude,
             item,
@@ -237,11 +241,8 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
             mPrizeMoney?.text.toString(),
             userid,
         )
-        val locationModel = LocationModel(longitude, latitude)
 
         databaseReference.child("Just Photos").child(gTimestamp).setValue(model)
-        databaseReference.child("Location").child(gTimestamp).child("LatLng")
-            .setValue(locationModel)
 
     }
 
@@ -257,7 +258,6 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
         adapter = ItemAdapter(mList!!)
         recyclerView?.adapter = adapter
     }
-
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         val c = Calendar.getInstance()

@@ -8,6 +8,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.widget.EditText
@@ -21,6 +23,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.omanshuaman.tournamentsports.inventory.LoadingDialog
 
 @Suppress("DEPRECATION")
 
@@ -46,8 +49,9 @@ class GroupCreateActivity : AppCompatActivity() {
         actionBar!!.setDisplayShowHomeEnabled(true)
         actionBar!!.title = "Create Group"
 
+
         val intent = intent
-        tournamentId = intent.getStringExtra("Id")
+        tournamentId = intent.getStringExtra("tournamentId")
         //init UI views
         groupIconIv = findViewById(R.id.groupIconIv)
         groupTitleEt = findViewById(R.id.entry_fee)
@@ -69,6 +73,7 @@ class GroupCreateActivity : AppCompatActivity() {
     }
 
     private fun startCreatingGroup() {
+
         progressDialog = ProgressDialog(this)
         progressDialog!!.setMessage("Creating Group")
 

@@ -5,7 +5,7 @@ class Upload {
     var matchDate: String? = null
     var registerDate: String? = null
     var requirement: String? = null
-    var rules: String? = null
+    var sports: String? = null
     var address: String? = null
     var tournamentName: String? = null
     var longitude: String? = null
@@ -23,7 +23,7 @@ class Upload {
         matchDate: String?,
         registerDate: String?,
         requirement: String?,
-        rules: String?,
+        sports: String?,
         address: String?,
         imageUrl: String?,
         longitude: String?,
@@ -39,7 +39,7 @@ class Upload {
         this.matchDate = matchDate
         this.registerDate = registerDate
         this.requirement = requirement
-        this.rules = rules
+        this.sports = sports
         this.address = address
         this.longitude = longitude
         this.latitude = latitude

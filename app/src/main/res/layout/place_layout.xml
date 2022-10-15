@@ -40,7 +40,7 @@
                     android:textColor="#9A9A9A" />
 
                 <TextView
-                    android:id="@+id/pBed"
+                    android:id="@+id/pSports"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cricket "
@@ -74,7 +74,7 @@
                     android:textColor="#9A9A9A" />
 
                 <TextView
-                    android:id="@+id/pBedroom"
+                    android:id="@+id/pEntryFee"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="100"

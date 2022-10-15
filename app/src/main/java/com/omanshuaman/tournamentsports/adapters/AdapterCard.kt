@@ -3,21 +3,14 @@ package com.omanshuaman.tournamentsports.adapters
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import coil.annotation.ExperimentalCoilApi
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import com.omanshuaman.tournamentsports.ComposeActivity
 import com.omanshuaman.tournamentsports.R
 import com.omanshuaman.tournamentsports.models.Upload
@@ -34,11 +27,14 @@ class AdapterCard(context: Context, uploads: List<Upload?>?) :
 
         var name: TextView
         var image: ImageView
+        var mSport: TextView
+        var mEntry: TextView
 
         init {
             name = itemView.findViewById(R.id.txtPlaceName)
             image = itemView.findViewById(R.id.cardImageview)
-
+            mSport = itemView.findViewById(R.id.pSports)
+            mEntry = itemView.findViewById(R.id.pEntryFee)
         }
     }
 
@@ -60,13 +56,20 @@ class AdapterCard(context: Context, uploads: List<Upload?>?) :
 
         val model = mUploads[position]
         val id = model?.Id
+        val sports = model?.sports
+        val entry = model?.entryFee
+        val prize = model?.prizeMoney
+        val address = model?.address
+        val matchDate = model?.matchDate
+
         val image = model?.imageUrl
         val name: String? = mUploads[position]?.tournamentName
         Picasso.get().load(image).fit().centerCrop().into(holder.image)
 
         //set data
         holder.name.text = name
-
+        holder.mSport.text = sports
+        holder.mEntry.text = entry
         //handle group click
         holder.itemView.setOnClickListener {
             //open group chat
@@ -74,7 +77,13 @@ class AdapterCard(context: Context, uploads: List<Upload?>?) :
             val intent = Intent(mContext, ComposeActivity::class.java)
             val extras = Bundle()
             extras.putString("tournamentId", id)
-            extras.putString("EXTRA_PASSWORD", image)
+            extras.putString("entryFee", entry)
+            extras.putString("prizeFee", prize)
+            extras.putString("address", address)
+            extras.putString("tournamentName", name)
+            extras.putString("backgroundImage", image)
+            extras.putString("matchDate", matchDate)
+
             intent.putExtras(extras)
             mContext.startActivity(intent)
 

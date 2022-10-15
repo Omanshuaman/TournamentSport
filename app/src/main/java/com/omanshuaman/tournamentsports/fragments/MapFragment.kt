@@ -27,7 +27,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.omanshuaman.tournamentsports.ComposeActivity
 import com.omanshuaman.tournamentsports.R
 import com.omanshuaman.tournamentsports.SignInActivity
 import com.omanshuaman.tournamentsports.SpinnerActivity
@@ -102,8 +101,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val databaseReference =
-            FirebaseDatabase.getInstance().getReference("Tournament").child("Location")
 
         recyclerView = view?.findViewById(R.id.placesRecyclerView)
 
@@ -167,13 +164,20 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
         }
 
-        databaseReference.addChildEventListener(object : ChildEventListener {
-            override fun onChildAdded(dataSnapshot: DataSnapshot, s: String?) {
-                for (child in dataSnapshot.children) {
+        val databaseReference1 =
+            FirebaseDatabase.getInstance().getReference("Tournament").child("Just Photos")
+        databaseReference1.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (zoneSnapshot in dataSnapshot.children) {
+                    Log.i(
+                        "TAG7",
+                        zoneSnapshot.child("latitude").getValue(String::class.java)!!
+                    )
+
                     val long =
-                        dataSnapshot.child("LatLng").child("longitude").value.toString().toDouble()
+                        zoneSnapshot.child("longitude").getValue(String::class.java)!!.toString().toDouble()
                     val lat =
-                        dataSnapshot.child("LatLng").child("latitude").value.toString().toDouble()
+                        zoneSnapshot.child("latitude").getValue(String::class.java)!!.toString().toDouble()
 
                     Log.d("LONG", "onChildAdded: " + long.toString().toDouble())
                     val location = LatLng(lat, long)
@@ -182,29 +186,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                     )
                     mMarkerArray.add(marker)
-
                 }
-                Log.d("Array", "onChildAdded: " + mMarkerArray.size)
-
             }
 
-            override fun onChildChanged(dataSnapshot: DataSnapshot, s: String?) {
-                Log.d("Data onChildChanged", dataSnapshot.value.toString())
-            }
-
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                Log.d("Data onChildRemoved", dataSnapshot.value.toString())
-            }
-
-            override fun onChildMoved(dataSnapshot: DataSnapshot, s: String?) {
-                Log.d("Data onChildMoved", dataSnapshot.value.toString())
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+            override fun onCancelled(databaseError: DatabaseError) {
+                Log.w("TAG", "onCancelled", databaseError.toException())
             }
         })
-
 
 
         recyclerView!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -212,7 +200,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                     val firstCompletePosition =
                         layoutManager.findFirstCompletelyVisibleItemPosition()
 
@@ -226,7 +213,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                                     mMarkerArray[i]!!.position.longitude,
                                 )
                             ).zoom(mMap.cameraPosition.zoom).build()
-                            val zoom: Float = mMap.cameraPosition.zoom
 
                             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
 

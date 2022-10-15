@@ -2,7 +2,6 @@ package com.omanshuaman.tournamentsports.details
 
 import android.content.Intent
 import android.graphics.Color.parseColor
-import android.graphics.Color.rgb
 import android.view.LayoutInflater
 import android.widget.TextView
 import androidx.compose.animation.core.animateDpAsState
@@ -26,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat.startActivity
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -43,7 +41,6 @@ import com.omanshuaman.tournamentsports.components.OrderedList
 import com.omanshuaman.tournamentsports.models.Upload
 import com.omanshuaman.tournamentsports.ui.theme.*
 import com.omanshuaman.tournamentsports.util.Constants.BASE_URL
-import androidx.compose.ui.platform.LocalContext
 
 @ExperimentalMaterialApi
 @Composable
@@ -121,14 +118,6 @@ fun BottomSheetContent(
                 .padding(bottom = LARGE_PADDING),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                modifier = Modifier
-                    .size(INFO_ICON_SIZE)
-                    .weight(2f),
-                painter = painterResource(id = R.drawable.ic_trophy),
-                contentDescription = stringResource(id = R.string.app_logo),
-                tint = contentColor
-            )
             Text(
                 modifier = Modifier.weight(8f),
                 text = selectedHero.tournamentName!!,
@@ -141,31 +130,32 @@ fun BottomSheetContent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = MEDIUM_PADDING),
+                .padding(bottom = LARGE_PADDING),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             InfoBox(
                 icon = painterResource(id = R.drawable.ic_bolt),
                 iconColor = infoBoxIconColor,
-                bigText = "${selectedHero.Id}",
+                bigText = "${selectedHero.entryFee}",
                 smallText = stringResource(R.string.power),
-                textColor = contentColor
-            )
-            InfoBox(
-                icon = painterResource(id = R.drawable.ic_calendar),
-                iconColor = infoBoxIconColor,
-                bigText = selectedHero.latitude!!,
-                smallText = stringResource(R.string.month),
                 textColor = contentColor
             )
             InfoBox(
                 icon = painterResource(id = R.drawable.ic_trophy),
                 iconColor = infoBoxIconColor,
-                bigText = selectedHero.longitude!!,
-                smallText = stringResource(R.string.birthday),
+                bigText = selectedHero.prizeMoney!!,
+                smallText = stringResource(R.string.month),
                 textColor = contentColor
             )
+
         }
+        InfoBox(
+            icon = painterResource(id = R.drawable.ic_calendar),
+            iconColor = infoBoxIconColor,
+            bigText = selectedHero.matchDate!!,
+            smallText = stringResource(R.string.birthday),
+            textColor = contentColor
+        )
 
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -179,32 +169,11 @@ fun BottomSheetContent(
             modifier = Modifier
                 .alpha(ContentAlpha.medium)
                 .padding(bottom = MEDIUM_PADDING),
-            text = selectedHero.SportsType!!,
+            text = selectedHero.address!!,
             color = contentColor,
             fontSize = MaterialTheme.typography.body1.fontSize,
             maxLines = 7
         )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            OrderedList(
-                title = stringResource(R.string.family),
-                items = selectedHero.prizeMoney!!,
-                textColor = contentColor
-            )
-            OrderedList(
-                title = stringResource(R.string.abilities),
-                items = selectedHero.prizeMoney!!,
-                textColor = contentColor
-            )
-            OrderedList(
-                title = stringResource(R.string.nature_types),
-                items = selectedHero.tournamentName!!,
-                textColor = contentColor
-            )
-        }
 
         AndroidView(
             factory = { context ->
@@ -219,7 +188,8 @@ fun BottomSheetContent(
                 if (user != null) {
                     //user is signed in stay here
                     //set email of logged in user
-                    val ref = FirebaseDatabase.getInstance().getReference("Tournament").child("Groups")
+                    val ref =
+                        FirebaseDatabase.getInstance().getReference("Tournament").child("Groups")
                     ref.child(selectedHero.Id.toString()).child("Participants").child(user)
                         .addListenerForSingleValueEvent(object : ValueEventListener {
                             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -328,11 +298,11 @@ fun BottomSheetContentPreview() {
         selectedHero = Upload(
             Id = "om",
             tournamentName = "Delhi Badminton Tournament",
-            matchDate="vfdv",
-            registerDate= "dvdvd",
-            requirement="vdf",
-            rules="rdf",
-            address="dfdv",
+            matchDate = "vfdv",
+            registerDate = "dvdvd",
+            requirement = "vdf",
+            sports = "rdf",
+            address = "dfdv",
             imageUrl = "$BASE_URL/images/sasuke.jpg",
             longitude = "String",
             latitude = "String",
