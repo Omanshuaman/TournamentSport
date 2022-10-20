@@ -8,10 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.recyclerview.widget.RecyclerView
-import coil.annotation.ExperimentalCoilApi
-import com.omanshuaman.tournamentsports.ComposeActivity
+import com.omanshuaman.tournamentsports.DetailsActivity
 import com.omanshuaman.tournamentsports.R
 import com.omanshuaman.tournamentsports.models.Upload
 import com.squareup.picasso.Picasso
@@ -50,7 +48,6 @@ class AdapterCard(context: Context, uploads: List<Upload?>?) :
         return MyHolder(view)
     }
 
-    @OptIn(ExperimentalMaterialApi::class, ExperimentalCoilApi::class)
     override fun onBindViewHolder(holder: MyHolder, position: Int) {
         //get data
 
@@ -74,7 +71,7 @@ class AdapterCard(context: Context, uploads: List<Upload?>?) :
         holder.itemView.setOnClickListener {
             //open group chat
 
-            val intent = Intent(mContext, ComposeActivity::class.java)
+            val intent = Intent(mContext, DetailsActivity::class.java)
             val extras = Bundle()
             extras.putString("tournamentId", id)
             extras.putString("entryFee", entry)

@@ -8,8 +8,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.provider.MediaStore
 import android.text.TextUtils
 import android.widget.EditText
@@ -23,7 +21,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import com.omanshuaman.tournamentsports.inventory.LoadingDialog
 
 @Suppress("DEPRECATION")
 
@@ -122,8 +119,7 @@ class GroupCreateActivity : AppCompatActivity() {
                         .show()
                 }
         }
-        val intent = Intent(this, DashboardActivity::class.java)
-        startActivity(intent)
+
     }
 
     private fun createGroup(
@@ -166,6 +162,8 @@ class GroupCreateActivity : AppCompatActivity() {
                             Toast.LENGTH_SHORT
                         )
                             .show()
+                        val intent = Intent(this, DashboardActivity::class.java)
+                        startActivity(intent)
                     }
                     .addOnFailureListener { e -> //failed adding participant
                         progressDialog!!.dismiss()
@@ -255,9 +253,39 @@ class GroupCreateActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return super.onSupportNavigateUp()
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+
+        val intent = intent
+        tournamentId = intent.getStringExtra("tournamentId")
+
+        val builder: androidx.appcompat.app.AlertDialog.Builder =
+            androidx.appcompat.app.AlertDialog.Builder(this)
+        builder.setCancelable(false)
+        builder.setMessage("Do you want to Exit?")
+        builder.setPositiveButton(
+            "Yes"
+        ) { dialog, which -> //if user pressed "yes", then he is allowed to exit from application
+
+            val ref = FirebaseDatabase.getInstance().getReference("Tournament").child("Just Photos")
+            ref.child(tournamentId!!)
+                .removeValue()
+                .addOnSuccessListener { //group deleted successfully...
+                    startActivity(Intent(this@GroupCreateActivity, DashboardActivity::class.java))
+                    finish()
+                }
+                .addOnFailureListener { e -> //failed to delete group
+                    Toast.makeText(this@GroupCreateActivity, "" + e.message, Toast.LENGTH_SHORT)
+                        .show()
+                }
+        }
+        builder.setNegativeButton(
+            "No"
+        ) { dialog, which -> //if user select "No", just cancel this dialog and continue with app
+            dialog.cancel()
+        }
+        val alert: androidx.appcompat.app.AlertDialog = builder.create()
+        alert.show()
     }
 
     override fun onRequestPermissionsResult(

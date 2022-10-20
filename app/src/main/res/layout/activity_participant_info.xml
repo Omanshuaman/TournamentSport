@@ -32,7 +32,11 @@
         android:padding="10dp"
         android:textColor="@color/black" />
 
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/phone_number"
+        android:text="*this will only visible to organizer" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

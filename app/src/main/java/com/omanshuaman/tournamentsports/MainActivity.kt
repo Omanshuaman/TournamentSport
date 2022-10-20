@@ -2,6 +2,8 @@ package com.omanshuaman.tournamentsports
 
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -25,7 +27,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.omanshuaman.tournamentsports.adapters.ItemAdapter
 import com.omanshuaman.tournamentsports.inventory.DatePickerFragment
-import com.omanshuaman.tournamentsports.inventory.LoadingDialog
 import com.omanshuaman.tournamentsports.models.DataModel
 import com.omanshuaman.tournamentsports.models.Upload
 import java.text.DateFormat
@@ -63,7 +64,8 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
     private val databaseReference = FirebaseDatabase.getInstance().getReference("Tournament")
     private val gTimestamp = "" + System.currentTimeMillis()
     private var recyclerView: RecyclerView? = null
-    private var loadingDialog: LoadingDialog? = null
+    private var recyclerView1: RecyclerView? = null
+    private var recyclerView2: RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +96,17 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
         recyclerView?.setHasFixedSize(false)
         recyclerView?.layoutManager = LinearLayoutManager(this)
 
-        recyclerName()
+        recyclerView1 = findViewById(R.id.entry_recyclerview)
+        recyclerView1?.setHasFixedSize(false)
+        recyclerView1?.layoutManager = LinearLayoutManager(this)
+
+        recyclerView2 = findViewById(R.id.prize_recyclerview)
+        recyclerView2?.setHasFixedSize(false)
+        recyclerView2?.layoutManager = LinearLayoutManager(this)
+
+        recyclerTournamentName()
+        recyclerEntryFee()
+        recyclerPrizeMoney()
 
         button!!.setOnClickListener {
             val datePicker: DialogFragment = DatePickerFragment()
@@ -119,6 +131,7 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
         }
 
     }
+
 
     private fun openPlacePicker() {
 
@@ -246,18 +259,47 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
 
     }
 
-    private fun recyclerName() {
+    private fun recyclerTournamentName() {
         mList = ArrayList()
 
         val nestedList1: MutableList<String> = ArrayList()
-        nestedList1.add("Najafgrah park Sprint Tournament")
-        nestedList1.add("Dwarka Badminton Tournament")
-        nestedList1.add("National Blast Championship")
-        nestedList1.add("Najafgarh Football tournament")
+        nestedList1.add("Najafgrah Sprint Tournament 2022")
+        nestedList1.add("Dwarka Club Sprint Tournament")
+        nestedList1.add("Delhi Athletics academy Sprint Tournament")
+
         mList!!.add(DataModel(nestedList1, "Example"))
         adapter = ItemAdapter(mList!!)
         recyclerView?.adapter = adapter
+
+
     }
+
+
+    private fun recyclerEntryFee() {
+        mList = ArrayList()
+
+        val nestedList1: MutableList<String> = ArrayList()
+        nestedList1.add("Free")
+        nestedList1.add("50₹")
+        nestedList1.add("100₹")
+        mList!!.add(DataModel(nestedList1, "Example"))
+        adapter = ItemAdapter(mList!!)
+        recyclerView1?.adapter = adapter
+    }
+
+    private fun recyclerPrizeMoney() {
+        mList = ArrayList()
+
+        val nestedList1: MutableList<String> = ArrayList()
+        nestedList1.add("100₹")
+        nestedList1.add("1st Prize: 50% of Participant Entry fee\n2nd Prize: 25% of Participant Entry fee\n3rd Prize: 20% of Participant Entry fee")
+        nestedList1.add("1000₹ +\n 1st Prize: 50% of Participant Entry fee\n2nd Prize: 25% of Participant Entry fee\n3rd Prize: 20% of Participant Entry fee")
+        nestedList1.add("5000₹")
+        mList!!.add(DataModel(nestedList1, "Example"))
+        adapter = ItemAdapter(mList!!)
+        recyclerView2?.adapter = adapter
+    }
+
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         val c = Calendar.getInstance()

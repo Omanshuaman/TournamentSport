@@ -8,8 +8,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
-
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-feature
         android:name="android.hardware.location.network"
         android:required="false" />
@@ -27,17 +27,27 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
         <activity
-            android:name=".PosterActivity"
+            android:name=".PosterZoom"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".ComposeActivity"
+            android:name=".DetailsActivity"
             android:exported="false"
-            android:label="@string/title_activity_compose"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/Theme.PalleteAPI">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".PosterActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".MapImage"
             android:exported="false" />
@@ -109,6 +119,24 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+
+        <!--
+Set the android:exported attribute to false;
+the FileProvider does not need to be public.
+-->
+        <!--
+ Set the android:grantUriPermissions attribute to true,
+             to allow you to grant temporary access to files.
+        -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.omanshuaman.tournamentsports.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/paths" />
+        </provider>
     </application>
 
 </manifest>

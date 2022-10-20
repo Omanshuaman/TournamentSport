@@ -4,9 +4,9 @@
     android:id="@+id/cardView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:cardElevation="1dp"
+    android:layout_margin="2dp"
     app:cardCornerRadius="5dp"
-    android:layout_margin="2dp">
+    app:cardElevation="1dp">
 
     <TextView
         android:id="@+id/nestedItemTv"
@@ -17,6 +17,7 @@
         android:padding="10dp"
         android:text="Grocery and Stationary"
         android:textColor="#757575"
+        android:textIsSelectable="true"
         android:textSize="12sp" />
 
 

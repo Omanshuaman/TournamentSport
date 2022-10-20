@@ -2,8 +2,11 @@ package com.omanshuaman.tournamentsports.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -120,7 +123,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mMarkerArray = ArrayList()
         // getLastKnownLocation()
         mMap.setOnMarkerClickListener { marker ->
-            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+            marker.setIcon(bitmapDescriptorFromVector(requireContext(), R.drawable.runner))
 
             val markerPosition = marker.position
             var selectedMarker = 0
@@ -169,21 +172,20 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         databaseReference1.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 for (zoneSnapshot in dataSnapshot.children) {
-                    Log.i(
-                        "TAG7",
-                        zoneSnapshot.child("latitude").getValue(String::class.java)!!
-                    )
 
                     val long =
-                        zoneSnapshot.child("longitude").getValue(String::class.java)!!.toString().toDouble()
+                        zoneSnapshot.child("longitude").getValue(String::class.java)!!.toString()
+                            .toDouble()
                     val lat =
-                        zoneSnapshot.child("latitude").getValue(String::class.java)!!.toString().toDouble()
+                        zoneSnapshot.child("latitude").getValue(String::class.java)!!.toString()
+                            .toDouble()
 
-                    Log.d("LONG", "onChildAdded: " + long.toString().toDouble())
                     val location = LatLng(lat, long)
                     val marker: Marker? = googleMap.addMarker(
                         MarkerOptions().position(location)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                            .icon(
+                                bitmapDescriptorFromVector(context!!, R.drawable.runner)
+                            )
                     )
                     mMarkerArray.add(marker)
                 }
@@ -225,6 +227,25 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         })
 
 
+    }
+
+
+    private fun bitmapDescriptorFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+        val vectorDrawable = ContextCompat.getDrawable(context, vectorResId)
+        vectorDrawable!!.setBounds(
+            0,
+            0,
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight
+        )
+        val bitmap = Bitmap.createBitmap(
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        vectorDrawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
     }
 
     // Checks that users have given permission

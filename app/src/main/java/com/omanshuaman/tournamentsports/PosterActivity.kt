@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.withTranslation
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FileDownloadTask
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.omanshuaman.tournamentsports.inventory.LoadingDialog
@@ -27,13 +26,14 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.IOException
 import java.util.HashMap
+import android.content.DialogInterface
+import androidx.appcompat.app.AlertDialog
 
 
 class PosterActivity : AppCompatActivity() {
     var imageView: ImageView? = null
     private var storageReference: StorageReference? = null
     private var button: Button? = null
-    private var uri1: Uri? = null
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +50,7 @@ class PosterActivity : AppCompatActivity() {
         val matchDate = extras.getString("matchDate")
         val address = extras.getString("address")
         val id = extras.getString("id")
+
         val textPaint7 = Paint(Paint.ANTI_ALIAS_FLAG)
         textPaint7.textAlign = Paint.Align.CENTER
         textPaint7.typeface = ResourcesCompat.getFont(this, R.font.ralewaythin)
@@ -210,6 +211,41 @@ class PosterActivity : AppCompatActivity() {
 
         return Uri.parse(path)
 
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+
+        val intent = intent
+        val extras = intent.extras
+        val id = extras?.getString("id")
+
+        val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+        builder.setCancelable(false)
+        builder.setMessage("Do you want to Exit?")
+        builder.setPositiveButton(
+            "Yes"
+        ) { dialog, which -> //if user pressed "yes", then he is allowed to exit from application
+
+            val ref = FirebaseDatabase.getInstance().getReference("Tournament").child("Just Photos")
+            ref.child(id!!)
+                .removeValue()
+                .addOnSuccessListener { //group deleted successfully...
+                    startActivity(Intent(this@PosterActivity, DashboardActivity::class.java))
+                    finish()
+                }
+                .addOnFailureListener { e -> //failed to delete group
+                    Toast.makeText(this@PosterActivity, "" + e.message, Toast.LENGTH_SHORT)
+                        .show()
+                }
+        }
+        builder.setNegativeButton(
+            "No"
+        ) { dialog, which -> //if user select "No", just cancel this dialog and continue with app
+            dialog.cancel()
+        }
+        val alert: AlertDialog = builder.create()
+        alert.show()
     }
 
     private fun getFileExtension(mUri: Uri): String? {

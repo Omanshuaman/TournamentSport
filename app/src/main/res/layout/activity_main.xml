@@ -85,14 +85,12 @@
                 android:layout_weight="1"
                 android:textSize="16sp" />
 
-
         </LinearLayout>
 
         <EditText
             android:id="@+id/entry_fee"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginBottom="50dp"
             android:background="@drawable/custom_input_form"
             android:hint="Entry Free"
             android:padding="10dp"
@@ -101,12 +99,18 @@
             android:textColor="@color/black"
             android:textSize="18sp" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/entry_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:padding="1dp" />
+
         <EditText
             android:id="@+id/prize_money"
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="50dp"
             android:background="@drawable/custom_input_form"
             android:hint="Prize Money"
             android:padding="10dp"
@@ -114,6 +118,13 @@
             android:paddingEnd="12dp"
             android:textColor="@color/black"
             android:textSize="18sp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/prize_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:padding="1dp" />
 
         <Button
             android:id="@+id/BtnPickLocation"
