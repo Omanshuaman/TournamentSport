@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
@@ -28,7 +27,6 @@ class PosterZoom : AppCompatActivity() {
 
     private var imageView: PhotoView? = null
     private var download: FloatingActionButton? = null
-    private val outputDir = "Android11Permissions"
     private var shareBtn: FloatingActionButton? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,15 +41,16 @@ class PosterZoom : AppCompatActivity() {
         val bundle = intent.extras
         val message = bundle!!.getString("backgroundImage")
 
-        Glide.with(imageView!!).load(message)
-            .apply(
-                RequestOptions()
-                    .fitCenter()
-                    .format(DecodeFormat.PREFER_ARGB_8888)
-                    .override(Target.SIZE_ORIGINAL)
-            )
-            .into(imageView!!)
-
+        runOnUiThread {
+            Glide.with(imageView!!).load(message)
+                .apply(
+                    RequestOptions()
+                        .fitCenter()
+                        .format(DecodeFormat.PREFER_ARGB_8888)
+                        .override(Target.SIZE_ORIGINAL)
+                )
+                .into(imageView!!)
+        }
         shareBtn!!.setOnClickListener {
 
             CoroutineScope(Dispatchers.IO).launch {

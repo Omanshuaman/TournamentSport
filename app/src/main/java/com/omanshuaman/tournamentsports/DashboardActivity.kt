@@ -11,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.omanshuaman.tournamentsports.databinding.ActivityDriverHomeBinding
@@ -52,12 +50,17 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
         Handler(Looper.getMainLooper()).postDelayed({
             // Your Code
-            supportFragmentManager.beginTransaction().replace(
-                R.id.fragment_container,
-                MapFragment()
-            ).commit()
-            navigationView.setCheckedItem(R.id.navi_home)
+            if (!isFinishing) {
+                supportFragmentManager.beginTransaction().replace(
+                    R.id.fragment_container,
+                    MapFragment()
+                ).commitAllowingStateLoss()
+                navigationView.setCheckedItem(R.id.navi_home)
+            }
+
         }, 500)
+
+
 //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction().replace(
 //                R.id.fragment_container,

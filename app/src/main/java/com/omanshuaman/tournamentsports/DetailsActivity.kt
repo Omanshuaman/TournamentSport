@@ -109,12 +109,13 @@ class DetailsActivity : AppCompatActivity() {
             val intent = intent
             val extras = intent.extras
             val tournamentId = extras?.getString("tournamentId")
-            val backgroundImage = extras?.getString("backgroundImage")
-            val bitmap = backgroundImage?.let { getBitmap(it) }
+            val backgroundImageMid = extras?.getString("backgroundImageMid")
+
+            val bitmap = backgroundImageMid?.let { getBitmap(it) }
 
             withContext(Dispatchers.Main) {
                 Picasso.get()
-                    .load(backgroundImage)
+                    .load(backgroundImageMid)
                     .fit().centerCrop().into(imageView)
 
                 val palette = createPaletteSync(bitmap)

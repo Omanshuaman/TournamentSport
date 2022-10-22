@@ -9,10 +9,12 @@ import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,7 +36,6 @@ import java.util.*
 
 
 @Suppress("DEPRECATION")
-
 
 class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
     AdapterView.OnItemSelectedListener {
@@ -67,6 +68,7 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
     private var recyclerView1: RecyclerView? = null
     private var recyclerView2: RecyclerView? = null
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -253,6 +255,7 @@ class MainActivity : AppCompatActivity(), DatePickerDialog.OnDateSetListener,
             mEntryFee?.text.toString(),
             mPrizeMoney?.text.toString(),
             userid,
+            mRegisterDate?.text.toString()
         )
 
         databaseReference.child("Just Photos").child(gTimestamp).setValue(model)
