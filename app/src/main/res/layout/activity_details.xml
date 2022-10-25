@@ -73,12 +73,12 @@
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tournamentName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_semibold"
                     android:text="Dwakra Tournament"
                     android:textColor="@android:color/white"
-                    android:id="@+id/tournamentName"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -101,15 +101,25 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/entry_fee"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:alpha="0.75"
                     android:fontFamily="@font/poppins_medium"
                     android:text="60 ₹"
-                    android:id="@+id/entry_fee"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:alpha="0.75"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="*Only given to organizer at match date"
+                    android:textColor="@android:color/white"
+                    android:textSize="8sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -121,13 +131,13 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/prizeMoney"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:alpha="0.75"
                     android:fontFamily="@font/poppins_medium"
                     android:text="600 ₹"
-                    android:id="@+id/prizeMoney"
 
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
@@ -142,12 +152,12 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:alpha="0.75"
                     android:fontFamily="@font/poppins_medium"
-                    android:id="@+id/address"
                     android:text="A/24 main road, Najafgarh Rd, Janakpuri, Delhi, 110058"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
@@ -162,24 +172,44 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/matchDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:alpha="0.75"
                     android:fontFamily="@font/poppins_medium"
                     android:text="26/09/2002"
-                    android:id="@+id/matchDate"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:text="Organizer's Name"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/name_phoneNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:alpha="0.75"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="Omanshu Aman"
                     android:textColor="@android:color/white"
                     android:textSize="14sp" />
 
                 <Button
+                    android:id="@+id/register"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@android:color/white"
                     android:drawableEnd="@drawable/ic_keyboard_arrow_right_white_24dp"
                     android:fontFamily="@font/poppins_semibold"
                     android:text="Register NOW"
-                    android:id="@+id/register"
                     android:textAllCaps="true" />
             </LinearLayout>
         </LinearLayout>

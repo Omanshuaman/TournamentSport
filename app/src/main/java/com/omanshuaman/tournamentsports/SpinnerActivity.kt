@@ -8,12 +8,13 @@ import android.widget.Button
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.omanshuaman.tournamentsports.adapters.FruitAdapter
 import com.omanshuaman.tournamentsports.inventory.Data
 
 class SpinnerActivity : AppCompatActivity(), CustomSpinner.OnSpinnerEventsListener {
     private var spinner_fruits: CustomSpinner? = null
-    private var next_button: Button? = null
+    private var next_button: FloatingActionButton? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_spinner)
@@ -32,7 +33,11 @@ class SpinnerActivity : AppCompatActivity(), CustomSpinner.OnSpinnerEventsListen
                         val intent = Intent(this@SpinnerActivity, MainActivity::class.java)
                         startActivity(intent)
                     } else {
-                        Toast.makeText(this@SpinnerActivity, "Only Sprint Available", Toast.LENGTH_LONG).show()
+                        Toast.makeText(
+                            this@SpinnerActivity,
+                            "Only Sprint Available",
+                            Toast.LENGTH_LONG
+                        ).show()
 
                     }
                 }

@@ -184,8 +184,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     val marker: Marker? = googleMap.addMarker(
                         MarkerOptions().position(location)
                             .icon(
-                                bitmapDescriptorFromVector(context!!, R.drawable.runner)
-                            )
+                                context?.let { bitmapDescriptorFromVector(it, R.drawable.runner) })
                     )
                     mMarkerArray.add(marker)
                 }

@@ -31,14 +31,16 @@ import android.content.DialogInterface
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AlertDialog
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class PosterActivity : AppCompatActivity() {
     var imageView: ImageView? = null
     private var storageReference: StorageReference? = null
-    private var button: Button? = null
+    private var button: FloatingActionButton? = null
     private var loadingDialog: LoadingDialog? = null
     private var progressDialog: ProgressDialog? = null
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -164,6 +166,7 @@ class PosterActivity : AppCompatActivity() {
         }
 
     }
+
     private fun uploadFile(imageUri: Uri?, imageUri1: Uri?, imageUri2: Uri?, groupId: String) {
 
         loadingDialog?.startLoadingDialog()
@@ -328,6 +331,7 @@ class PosterActivity : AppCompatActivity() {
         return Uri.parse(path)
 
     }
+
     private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
         Toast.makeText(
             this@PosterActivity,

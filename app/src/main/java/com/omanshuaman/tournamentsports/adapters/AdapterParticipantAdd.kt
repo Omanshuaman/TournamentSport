@@ -93,7 +93,6 @@ class AdapterParticipantAdd(
                         if (dataSnapshot.exists()) {
                             //user exists/participant
                             val hisPreviousRole = "" + dataSnapshot.child("role").value
-
                             //options to display in dialog
                             val options: Array<String>
                             val builder = AlertDialog.Builder(
@@ -103,73 +102,102 @@ class AdapterParticipantAdd(
                             if (myGroupRole == "creator") {
                                 if (hisPreviousRole == "admin") {
                                     //im creator, he is admin
-                                    options = arrayOf("Remove Admin", "Remove User")
+                                    options = arrayOf("Remove Admin", "Remove User", "Info")
                                     builder.setItems(
                                         options
                                     ) { dialog, which ->
                                         //handle item clicks
-                                        if (which == 0) {
-                                            //Remove Admin clicked
-                                            removeAdmin(modelUser)
-                                        } else {
-                                            //Remove User clicked
-                                            removeParticipant(modelUser)
+                                        when (which) {
+                                            0 -> {
+                                                //Remove Admin clicked
+                                                removeAdmin(modelUser)
+                                            }
+                                            1 -> {
+                                                //Remove User clicked
+                                                removeParticipant(modelUser)
+                                            }
+                                            2 -> {
+                                                infoUser(modelUser)
+                                            }
                                         }
                                     }.show()
                                 } else if (hisPreviousRole == "participant") {
                                     //im creator, he is participant
-                                    options = arrayOf("Make Admin", "Remove User")
+                                    options = arrayOf("Make Admin", "Remove User", "Info")
                                     builder.setItems(
                                         options
                                     ) { dialog, which ->
                                         //handle item clicks
-                                        if (which == 0) {
-                                            //Make Admin clicked
-                                            makeAdmin(modelUser)
-                                        } else {
-                                            //Remove User clicked
-                                            removeParticipant(modelUser)
+                                        when (which) {
+                                            0 -> {
+                                                //Make Admin clicked
+                                                makeAdmin(modelUser)
+                                            }
+                                            1 -> {
+                                                //Remove User clicked
+                                                removeParticipant(modelUser)
+                                            }
+                                            2 -> {
+                                                infoUser(modelUser)
+                                            }
                                         }
+
                                     }.show()
                                 }
                             } else if (myGroupRole == "admin") {
-                                if (hisPreviousRole == "creator") {
-                                    //im admin, he is creator
-                                    Toast.makeText(
-                                        context,
-                                        "Creator of Group...",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else if (hisPreviousRole == "admin") {
-                                    //im admin, he is admin too
-                                    options = arrayOf("Remove Admin", "Remove User")
-                                    builder.setItems(
-                                        options
-                                    ) { dialog, which ->
-                                        //handle item clicks
-                                        if (which == 0) {
-                                            //Remove Admin clicked
-                                            removeAdmin(modelUser)
-                                        } else {
-                                            //Remove User clicked
-                                            removeParticipant(modelUser)
-                                        }
-                                    }.show()
-                                } else if (hisPreviousRole == "participant") {
-                                    //im admin, he is participant
-                                    options = arrayOf("Make Admin", "Remove User")
-                                    builder.setItems(
-                                        options
-                                    ) { dialog, which ->
-                                        //handle item clicks
-                                        if (which == 0) {
-                                            //Make Admin clicked
-                                            makeAdmin(modelUser)
-                                        } else {
-                                            //Remove User clicked
-                                            removeParticipant(modelUser)
-                                        }
-                                    }.show()
+                                when (hisPreviousRole) {
+                                    "creator" -> {
+                                        //im admin, he is creator
+                                        Toast.makeText(
+                                            context,
+                                            "Creator of Group...",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                    "admin" -> {
+                                        //im admin, he is admin too
+                                        options = arrayOf("Remove Admin", "Remove User", "Info")
+                                        builder.setItems(
+                                            options
+                                        ) { dialog, which ->
+                                            //handle item clicks
+                                            when (which) {
+                                                0 -> {
+                                                    //Remove Admin clicked
+                                                    removeAdmin(modelUser)
+                                                }
+                                                1 -> {
+                                                    //Remove User clicked
+                                                    removeParticipant(modelUser)
+                                                }
+                                                2 -> {
+                                                    infoUser(modelUser)
+                                                }
+                                            }
+                                        }.show()
+                                    }
+                                    "participant" -> {
+                                        //im admin, he is participant
+                                        options = arrayOf("Make Admin", "Remove User", "Info")
+                                        builder.setItems(
+                                            options
+                                        ) { dialog, which ->
+                                            //handle item clicks
+                                            when (which) {
+                                                0 -> {
+                                                    //Make Admin clicked
+                                                    makeAdmin(modelUser)
+                                                }
+                                                1 -> {
+                                                    //Remove User clicked
+                                                    removeParticipant(modelUser)
+                                                }
+                                                2 -> {
+                                                    infoUser(modelUser)
+                                                }
+                                            }
+                                        }.show()
+                                    }
                                 }
                             } else {
                                 Toast.makeText(
@@ -186,6 +214,25 @@ class AdapterParticipantAdd(
         }
     }
 
+    private fun infoUser(modelUser: ModelUser) {
+        val reference =
+            FirebaseDatabase.getInstance().getReference("Tournament").child("Groups").child(groupId)
+                .child("Participants").child(modelUser.uid!!)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            //already exists
+                            val name = "" + dataSnapshot.child("yourName").value
+                            val phone = "" + dataSnapshot.child("phoneNumber").value
+
+                            Toast.makeText(context, "$name / $phone", Toast.LENGTH_SHORT).show()
+
+                        }
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {}
+                })
+    }
 
     private fun makeAdmin(modelUser: ModelUser) {
         //setup data - change role

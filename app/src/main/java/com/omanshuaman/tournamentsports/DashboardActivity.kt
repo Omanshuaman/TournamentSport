@@ -58,8 +58,7 @@ class DashboardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                 navigationView.setCheckedItem(R.id.navi_home)
             }
 
-        }, 500)
-
+        }, 100)
 
 //        if (savedInstanceState == null) {
 //            supportFragmentManager.beginTransaction().replace(

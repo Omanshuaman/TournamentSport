@@ -60,6 +60,7 @@ class AdapterCard(context: Context, uploads: List<Upload?>?) :
         val matchDate = model?.matchDate
         val imageUrlLow = model?.imageUrlLow
         val imageUrlMid = model?.imageUrlMid
+        val organizerName = model?.organizerName
 
         val image = model?.imageUrl
         val name: String? = mUploads[position]?.tournamentName
@@ -82,7 +83,7 @@ class AdapterCard(context: Context, uploads: List<Upload?>?) :
             extras.putString("backgroundImage", image)
             extras.putString("backgroundImageMid", imageUrlMid)
             extras.putString("matchDate", matchDate)
-
+            extras.putString("organizerName", organizerName)
             intent.putExtras(extras)
             mContext.startActivity(intent)
 
